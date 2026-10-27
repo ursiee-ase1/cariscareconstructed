@@ -82,16 +82,16 @@ export default async function HomePage() {
               const page = (focusPages[i]?.type === 'page' ? focusPages[i].page : null) as Page | null;
               const Icon = f.icon;
               return (
-                <article key={f.path} className="group relative flex flex-col overflow-hidden rounded-(--radius-card) bg-white shadow-(--shadow-card)">
-                  <CmsImage media={page?.heroImage} slot={f.slot} sizes="(min-width:768px) 33vw, 100vw" />
+                <article key={f.path} className="group relative flex flex-col rounded-(--radius-card) bg-white shadow-(--shadow-card)">
+                  <CmsImage media={page?.heroImage} slot={f.slot} sizes="(min-width:768px) 33vw, 100vw" className="rounded-t-(--radius-card)" />
                   <div className="flex flex-1 flex-col p-6">
-                    <span className="-mt-12 mb-4 flex size-12 items-center justify-center rounded bg-brand-700 text-white shadow-(--shadow-card) ring-4 ring-white">
+                    <span className="relative z-10 -mt-12 mb-4 flex size-12 items-center justify-center rounded bg-brand-700 text-white shadow-(--shadow-card) ring-4 ring-white">
                       <Icon aria-hidden className="size-6" />
                     </span>
                     <h3 className="text-xl font-bold">
                       <Link href={`/${f.path}`} className="after:absolute after:inset-0 group-hover:text-brand-700">
                         {page?.title ?? f.label}
-                      </Link>
+                      </Link>  
                     </h3>
                     {page?.summary && <p className="mt-3 text-[0.98rem] text-muted">{page.summary}</p>}
                     <span className="mt-auto inline-flex items-center gap-1.5 pt-5 font-display font-semibold text-brand-700" aria-hidden>
