@@ -121,7 +121,7 @@ export function MainNav({ items, utility, contact }: Props) {
         <ul className="hidden items-stretch lg:flex">
           {items.map((item, i) => {
             const active = isActive(pathname, item.href) || item.children.some((c) => isActive(pathname, c.href));
-            const base = `flex h-13 items-center gap-1 px-3.5 font-display text-[0.95rem] font-semibold tracking-wide transition-colors xl:px-4 ${
+            const base = `flex h-13 items-center gap-1 whitespace-nowrap px-2.5 font-display text-[0.875rem] font-semibold transition-colors xl:px-4 xl:text-[0.95rem] xl:tracking-wide ${
               active ? 'bg-brand-900 text-white shadow-[inset_0_-3px_0_var(--color-sky-accent)]' : 'text-brand-50 hover:bg-brand-900 hover:text-white'
             }`;
             if (!item.children.length) {

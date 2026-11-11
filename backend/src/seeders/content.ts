@@ -4,6 +4,7 @@ import type { Model, ModelStatic, Transaction, WhereOptions } from 'sequelize';
 import {
   CpdProgramme,
   CpdSession,
+  Event,
   HomepageSlide,
   LmiIndicatorValue,
   LmiReport,
@@ -21,6 +22,7 @@ import { storeUpload } from '../services/media.service';
 import { sanitizeRichText } from '../utils/html';
 import { slugify } from '../utils/slug';
 import {
+  asnRaMeetings,
   cpdProgrammes,
   lmiReports,
   newsletters,
@@ -124,7 +126,7 @@ export async function seedPeopleAndPartners(t?: Transaction) {
         description: p.description,
         is_featured: p.is_featured,
         sort_order: i,
-        status: 'published',
+        status: ('status' in p ? p.status : undefined) ?? 'published',
         published_at: PUBLISHED_AT,
         review_note: ('review' in p ? p.review : null) ?? (p.logo_file ? null : LOGO_REVIEW),
       },
@@ -231,6 +233,36 @@ export async function seedResearch(t?: Transaction) {
         await LmiIndicatorValue.create({ ...ind, report_id: r.row.get('id') as number }, { transaction: t });
       }
     }
+  }
+  return created;
+}
+
+/** ASN-RA meetings (events listed on /asn-ra). Returns the number of events created. */
+export async function seedAsnRaMeetings(t?: Transaction) {
+  let created = 0;
+  for (const m of asnRaMeetings) {
+    const r = await ensure(
+      Event,
+      { slug: m.slug },
+      {
+        slug: m.slug,
+        title: m.title,
+        event_type: 'meeting',
+        summary: m.summary,
+        body: sanitizeRichText(m.body),
+        starts_at: new Date(m.starts_at),
+        ends_at: m.ends_at ? new Date(m.ends_at) : null,
+        all_day: true,
+        venue: m.venue,
+        location_type: m.location_type,
+        legacy_url: m.legacy_url,
+        status: 'published',
+        published_at: new Date(m.starts_at),
+        review_note: m.review,
+      },
+      t,
+    );
+    if (r.created) created++;
   }
   return created;
 }

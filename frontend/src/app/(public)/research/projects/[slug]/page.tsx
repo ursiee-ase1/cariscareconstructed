@@ -6,7 +6,7 @@ import { CmsImage } from '@/components/ui/CmsImage';
 import { Badge, RichText } from '@/components/ui/Typography';
 import { PUBLICATION_TYPE_LABELS } from '@/lib/format';
 import { buildMetadata } from '@/lib/seo';
-import { getResearchProject } from '@/services/public';
+import { getResearchProject, isAsnRaProject } from '@/services/public';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -27,7 +27,7 @@ export default async function ProjectPage({ params }: Props) {
   const years = p.start_year ? `${p.start_year}${p.end_year ? `–${p.end_year}` : '–present'}` : null;
   return (
     <>
-      <PageHeader title={p.title} eyebrow={p.programme ?? 'Research project'} intro={p.summary} crumbs={[{ label: 'Research', href: '/research' }, { label: 'Projects', href: '/research/projects' }, { label: p.title }]} />
+      <PageHeader title={p.title} eyebrow={p.programme ?? 'Research project'} intro={p.summary} crumbs={[{ label: 'Research', href: '/research' }, isAsnRaProject(p) ? { label: 'ASN-RA', href: '/asn-ra#research-projects' } : { label: 'Projects', href: '/research/projects' }, { label: p.title }]} />
       <div className="container-site grid gap-12 py-12 md:py-16 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="max-w-3xl">
           {p.image && <CmsImage media={p.image} slot="feature" rounded className="mb-8" sizes="(min-width:1024px) 48rem, 100vw" />}

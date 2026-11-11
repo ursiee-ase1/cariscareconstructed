@@ -30,7 +30,7 @@ export function HeaderSearch() {
         <label htmlFor={`${id}-desk`} className="sr-only">
           Search the CARISCA website
         </label>
-        <div className="flex h-10 items-center rounded-(--radius-card) border border-line bg-surface focus-within:border-brand-500 focus-within:bg-white">
+        <div className="flex h-10 items-center rounded-(--radius-control) border border-line bg-surface focus-within:border-brand-500 focus-within:bg-white">
           <input
             id={`${id}-desk`}
             name="q"
@@ -50,7 +50,7 @@ export function HeaderSearch() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex size-10 items-center justify-center rounded-(--radius-card) text-brand-800 hover:bg-brand-50 md:hidden"
+        className="flex size-10 items-center justify-center rounded-(--radius-control) text-brand-800 hover:bg-brand-50 md:hidden"
         aria-expanded={open}
         aria-controls={`${id}-mobile`}
         aria-label={open ? 'Close search' : 'Open search'}
@@ -78,9 +78,9 @@ export function HeaderSearch() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search the website"
-              className="h-11 flex-1 rounded-(--radius-card) border border-line px-3 text-base outline-none focus:border-brand-500"
+              className="h-11 flex-1 rounded-(--radius-control) border border-line px-3 text-base outline-none focus:border-brand-500"
             />
-            <button type="submit" className="h-11 rounded-(--radius-card) bg-brand-700 px-4 font-display font-semibold text-white">
+            <button type="submit" className="h-11 rounded-(--radius-control) bg-brand-700 px-4 font-display font-semibold text-white">
               Search
             </button>
           </div>

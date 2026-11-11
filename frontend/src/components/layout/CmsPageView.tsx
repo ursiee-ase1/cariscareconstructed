@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import type { Page } from '@/types/api';
+import { isHiddenPath } from '@/lib/visibility';
 import { RichText } from '../ui/Typography';
 import { PageHeader, type Crumb } from './PageHeader';
 
@@ -13,26 +14,30 @@ export function crumbsFor(page: Page): Crumb[] {
 
 /**
  * Standard CMS page template: title band, rich text body and an "In this section" sidebar of
- * sibling pages. `children` renders below the body (forms, listings, etc.).
+ * sibling pages. `before` renders above the body and `children` below it (forms, listings, etc.).
  */
 export function CmsPageView({
   page,
   siblings = [],
   children,
+  before,
   aside,
 }: {
   page: Page;
   siblings?: Array<{ id: number; title: string; path: string }>;
   children?: ReactNode;
+  /** Rendered above the body (e.g. a notice that belongs at the top of the content). */
+  before?: ReactNode;
   aside?: ReactNode;
 }) {
-  const sectionLinks = siblings.filter((s) => s.id !== page.id);
+  const sectionLinks = siblings.filter((s) => s.id !== page.id && !isHiddenPath(s.path));
   const showSidebar = page.template !== 'wide' && (sectionLinks.length > 0 || aside);
   return (
     <>
       <PageHeader title={page.title} intro={page.summary} crumbs={crumbsFor(page)} image={page.heroImage} />
       <div className={`container-site py-12 md:py-16 ${showSidebar ? 'grid gap-12 lg:grid-cols-[minmax(0,1fr)_18rem]' : ''}`}>
         <div className={showSidebar ? '' : 'mx-auto max-w-4xl'}>
+          {before}
           <RichText html={page.body} />
           {children}
         </div>

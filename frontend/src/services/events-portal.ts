@@ -31,6 +31,8 @@ export interface PortalEvent {
   where: string | null;
   fee: string | null;
   registrationOpen: boolean;
+  /** The event has finished. */
+  ended: boolean;
   bannerUrl: string | null;
   url: string;
 }
@@ -59,10 +61,28 @@ function toPortalEvent(e: PortalEventRecord): PortalEvent {
     online,
     where: where || null,
     fee: lowestFee(e.prices),
-    registrationOpen: e.status === 'REGISTRATION_OPEN',
+    // The portal can leave registration "open" on an event that has already taken place.
+    registrationOpen: e.status === 'REGISTRATION_OPEN' && new Date(e.endAt ?? e.startAt).getTime() >= Date.now(),
+    ended: new Date(e.endAt ?? e.startAt).getTime() < Date.now(),
     bannerUrl: e.banner?.url && e.banner.visibility !== 'PRIVATE' ? `${EVENTS_API_URL}${e.banner.url}` : null,
     url: `${EVENTS_SITE_URL}/events/${encodeURIComponent(e.slug)}`,
   };
+}
+
+/** Fetches one listing from the portal's public API; null when the portal cannot be reached. */
+async function fetchPortalEvents(query: string): Promise<PortalEventRecord[] | null> {
+  try {
+    const res = await fetch(`${EVENTS_API_URL}/events?${query}`, {
+      headers: { accept: 'application/json' },
+      next: { revalidate: REVALIDATE_SECONDS, tags: ['portal-events'] },
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { data?: PortalEventRecord[] };
+    return body.data ?? [];
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -70,21 +90,22 @@ function toPortalEvent(e: PortalEventRecord): PortalEvent {
  * reached, so the homepage can still render and point visitors to the portal instead.
  */
 export async function getUpcomingPortalEvents(limit = 3): Promise<PortalEvent[] | null> {
-  try {
-    const res = await fetch(`${EVENTS_API_URL}/events?limit=12`, {
-      headers: { accept: 'application/json' },
-      next: { revalidate: REVALIDATE_SECONDS, tags: ['portal-events'] },
-      signal: AbortSignal.timeout(8_000),
-    });
-    if (!res.ok) return null;
-    const body = (await res.json()) as { data?: PortalEventRecord[] };
-    const now = Date.now();
-    return (body.data ?? [])
-      .filter((e) => new Date(e.endAt ?? e.startAt).getTime() >= now)
-      .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
-      .slice(0, limit)
-      .map(toPortalEvent);
-  } catch {
-    return null;
-  }
+  const records = await fetchPortalEvents('limit=12');
+  if (!records) return null;
+  const now = Date.now();
+  return records
+    .filter((e) => new Date(e.endAt ?? e.startAt).getTime() >= now)
+    .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
+    .slice(0, limit)
+    .map(toPortalEvent);
+}
+
+/**
+ * Events that have taken place on the events portal (its "when=past" listing), most recent first.
+ * Returns null when the portal cannot be reached.
+ */
+export async function getPastPortalEvents(limit = 12): Promise<PortalEvent[] | null> {
+  const records = await fetchPortalEvents(`when=past&limit=${limit}`);
+  if (!records) return null;
+  return records.sort((a, b) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime()).map(toPortalEvent);
 }

@@ -445,6 +445,14 @@ async function attachCuratedMedia(wpPagesByPath: Map<string, WpPost>) {
     }
   }
   for (const p of publications) {
+    if (!p.cover_source) continue;
+    const pub = await Publication.findOne({ where: { slug: slugify(p.title) } });
+    if (pub && !pub.cover_image_id) {
+      const cover = await downloadToMedia(p.cover_source, { alt: `Cover of ${p.title}` });
+      if (cover) await pub.update({ cover_image_id: cover.id });
+    }
+  }
+  for (const p of publications) {
     if (!p.file_source) continue;
     const pub = await Publication.findOne({ where: { slug: slugify(p.title) } });
     if (pub && !pub.file_id) {

@@ -3,6 +3,7 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { jsonLd, organizationJsonLd } from '@/lib/seo';
 import { getSite } from '@/services/public';
+import { withVisibleMenus } from '@/lib/visibility';
 import type { SiteData } from '@/types/api';
 
 const FALLBACK_SITE: SiteData = {
@@ -19,7 +20,7 @@ export default async function PublicLayout({ children }: { children: React.React
   await connection();
   let site: SiteData;
   try {
-    site = await getSite();
+    site = withVisibleMenus(await getSite());
   } catch {
     // Keep the shell usable if the API is briefly unreachable; pages show their own error state.
     site = FALLBACK_SITE;

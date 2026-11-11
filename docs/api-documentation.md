@@ -87,7 +87,7 @@ Only content with `status = published` and `published_at <= now` is returned. In
 | `GET /articles/:slug` | — | Full article + `related[]` |
 | `GET /categories` | — | Topics |
 | `GET /research/themes` | — | Themes |
-| `GET /research/projects` | `page, pageSize, theme` (slug), `status` | Projects |
+| `GET /research/projects` | `page, pageSize, theme` (slug), `status`, `programme`, `exclude_programme` | Projects |
 | `GET /research/projects/:slug` | — | Project + linked `publications[]` |
 | `GET /publications` | `page, pageSize, type` (comma list), `year, author, q` | Publications |
 | `GET /publications/facets` | — | Counts by `type` and `publication_year` |

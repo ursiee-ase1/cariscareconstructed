@@ -557,6 +557,8 @@ function publicPaths(): Json {
       ...pageParams(),
       query('theme', { type: 'string' }, 'Theme slug'),
       query('status', { type: 'string', enum: ['planned', 'ongoing', 'completed'] }),
+      query('programme', { type: 'string' }, 'Only projects of this programme, e.g. ASN-RA'),
+      query('exclude_programme', { type: 'string' }, 'Leave out projects of this programme'),
     ]),
     '/research/projects/{slug}': get('Public content', 'Research project with its publications', dataOf(ref('ResearchProject')), [slugParam], { 404: R[404] }),
     '/publications': get('Public content', 'List publications', listOf(ref('Publication')), [

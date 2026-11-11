@@ -4,7 +4,7 @@ import { ProjectCard, PublicationCard } from '@/components/cards/Cards';
 import { CmsPageView } from '@/components/layout/CmsPageView';
 import { SectionHeading } from '@/components/ui/Typography';
 import { buildMetadata } from '@/lib/seo';
-import { getPublications, getResearchProjects, getResearchThemes, resolvePage } from '@/services/public';
+import { getNonAsnRaProjects, getPublications, getResearchThemes, resolvePage } from '@/services/public';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata() {
@@ -16,14 +16,15 @@ export async function generateMetadata() {
 const QUICK = [
   { href: '/publications', label: 'Publications & Resources', text: 'Industry reports, policy briefs and journal articles.', icon: BookOpen },
   { href: '/lmi', label: 'Logistics Managers Index', text: 'Quarterly index of logistics activity in Ghana.', icon: BarChart3 },
-  { href: '/asn-ra', label: 'ASN-RA', text: 'Africa Supply Network Research Accelerator.', icon: Network },
+  { href: '/asn-ra', label: 'ASN-RA', text: 'Africa Supply Network Research Accelerator: members, research projects and meetings.', icon: Network },
 ];
 
 export default async function ResearchPage() {
   const [resolved, themes, projects, pubs] = await Promise.all([
     resolvePage('/research'),
     getResearchThemes(),
-    getResearchProjects({ pageSize: 6 }),
+    // ASN-RA projects are presented on the ASN-RA page (linked above), not repeated here.
+    getNonAsnRaProjects({ pageSize: 6 }),
     getPublications({ pageSize: 4 }),
   ]);
   if (resolved?.type !== 'page') notFound();

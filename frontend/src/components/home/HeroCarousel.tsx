@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import type { Slide } from '@/types/api';
 import { ButtonLink } from '../ui/Button';
 import { CmsImage } from '../ui/CmsImage';
@@ -10,8 +10,6 @@ const INTERVAL_MS = 5000;
 const SLIDE_MS = 950;
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 const SWIPE_PX = 40;
-/** Keeps faces in frame when wide photos are cropped to the banner. */
-const FOCAL_POINT = 'center 35%';
 const REDUCED = '(prefers-reduced-motion: reduce)';
 const subscribeReducedMotion = (cb: () => void) => {
   const mq = window.matchMedia(REDUCED);
@@ -32,6 +30,10 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
   const n = items.length;
   const looped = n > 1;
   const track = looped ? [items[n - 1], ...items, items[0]] : items;
+  // The banner takes the photographs' own shape (from the first slide's image), so the image fills
+  // the full width and the height follows; nothing is cropped. Falls back to 3:2, the hero photos' ratio.
+  const lead = items.find((s) => s.image?.width && s.image?.height)?.image;
+  const ratio = lead ? `${lead.width} / ${lead.height}` : '3 / 2';
 
   // Position on the track: 1..n are the real slides, 0 and n + 1 the copies.
   const [pos, setPos] = useState(looped ? 1 : 0);
@@ -82,10 +84,12 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
   }, [playing, hovered, moving, pos, move]);
 
   return (
-    <section aria-roledescription="carousel" aria-label="Highlights" className="bg-white pt-4 md:pt-6">
-      <div className="mx-auto w-full max-w-(--container-site) px-4 sm:px-6 lg:w-[80vw] lg:px-0">
+    <section aria-roledescription="carousel" aria-label="Highlights" className="bg-white pt-3 sm:pt-4 md:pt-5">
+      {/* Wider than the site container so the photograph reaches towards the viewport edges. */}
+      <div className="mx-auto w-full max-w-[120rem] px-3 sm:px-4 lg:px-6">
         <div
-          className="relative isolate h-[340px] touch-pan-y overflow-hidden rounded-(--radius-card) bg-brand-950 sm:h-[380px] md:h-[440px] lg:h-[480px] xl:h-[520px]"
+          className="relative isolate w-full touch-pan-y overflow-hidden rounded-(--radius-card) bg-brand-950 lg:aspect-(--hero-ratio)"
+          style={{ '--hero-ratio': ratio } as CSSProperties}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           onFocusCapture={() => setHovered(true)}
@@ -98,9 +102,9 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
             if (Math.abs(dx) > SWIPE_PX) move(pos + (dx < 0 ? 1 : -1));
           }}
         >
-          <div aria-live={playing ? 'off' : 'polite'} className="h-full">
+          <div aria-live={playing ? 'off' : 'polite'} className="lg:h-full">
             <div
-              className="flex h-full"
+              className="flex lg:h-full"
               style={{
                 transform: `translate3d(${-pos * 100}%, 0, 0)`,
                 transition: animate ? `transform ${SLIDE_MS}ms ${EASE}` : 'none',
@@ -120,26 +124,35 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
                     aria-label={`${real + 1} of ${n}`}
                     aria-hidden={!active || undefined}
                     inert={!active}
-                    className="relative h-full w-full shrink-0"
+                    className="relative flex w-full shrink-0 flex-col lg:block lg:h-full"
                   >
-                    <div className="absolute inset-0 -z-10">
+                    {/* The photograph is never cropped: the frame has the photograph's own proportions, so
+                        it fills the full width. Only a slide whose image has a different shape leaves
+                        spare space, which is filled with a softened copy of the same photograph. */}
+                    <div className="relative aspect-(--hero-ratio) w-full overflow-hidden lg:absolute lg:inset-0 lg:-z-10 lg:aspect-auto">
+                      {slide.image && (
+                        <div aria-hidden className="absolute inset-0 max-lg:hidden">
+                          <CmsImage media={slide.image} slot="hero" alt="" fill fit="cover" eager className="scale-110 opacity-55 blur-2xl" sizes="(min-width:1024px) 95vw, 100vw" />
+                        </div>
+                      )}
                       <CmsImage
                         media={slide.image}
                         slot="hero"
                         alt={slide.image_alt}
                         fill
+                        fit="contain"
                         priority={real === 0 && !isCopy}
                         eager
-                        objectPosition={FOCAL_POINT}
-                        sizes="(min-width:1024px) 80vw, 100vw"
+                        className="bg-transparent!"
+                        sizes="(min-width:1920px) 1872px, 98vw"
                       />
-                      <div className="absolute inset-0 bg-linear-to-r from-brand-950/90 via-brand-950/70 to-brand-950/30 md:via-brand-950/60 md:to-brand-950/5" />
+                      <div aria-hidden className="absolute inset-0 hidden bg-linear-to-r from-brand-950/85 via-brand-950/45 via-45% to-transparent to-70% lg:block" />
                     </div>
-                    <div className="flex h-full items-center px-6 pb-12 sm:px-10 md:pb-0 lg:px-14">
+                    <div className="flex-1 bg-brand-950 px-5 pt-6 pb-20 sm:px-8 lg:absolute lg:inset-0 lg:flex lg:items-center lg:bg-transparent lg:px-10 lg:pt-0 lg:pb-10 lg:px-14 xl:px-20">
                       <div className="max-w-xl">
-                        <div className="mb-4 h-1 w-14 bg-sky-accent md:mb-5" aria-hidden />
-                        <Heading className="text-[1.65rem] leading-[1.1] font-bold text-white sm:text-[2rem] md:text-[2.6rem]">{slide.title}</Heading>
-                        {slide.caption && <p className="mt-3 line-clamp-2 text-base text-brand-100 md:mt-4 md:line-clamp-3 md:text-lg">{slide.caption}</p>}
+                        <div className="mb-4 h-1 w-14 rounded-full bg-sky-accent md:mb-5" aria-hidden />
+                        <Heading className="text-[1.6rem] leading-[1.12] font-bold text-white sm:text-[2rem] md:text-[2.4rem] xl:text-[2.85rem]">{slide.title}</Heading>
+                        {slide.caption && <p className="mt-3 line-clamp-3 text-base text-brand-100 md:mt-4 md:text-lg">{slide.caption}</p>}
                         <div className="mt-6 flex flex-wrap gap-3 md:mt-7">
                           {slide.button_label && slide.button_url && (
                             <ButtonLink href={slide.button_url} variant="light" size="lg">
@@ -161,7 +174,7 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
           </div>
 
           {looped && (
-            <div className="absolute right-3 bottom-3 flex items-center gap-2 md:right-6 md:bottom-5">
+            <div className="absolute right-4 bottom-4 flex items-center gap-2 md:right-6 md:bottom-5">
               <button type="button" onClick={() => setPlaying(!playing)} className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur hover:bg-white/30" aria-label={playing ? 'Pause slideshow' : 'Play slideshow'}>
                 {playing ? <Pause aria-hidden className="size-4" /> : <Play aria-hidden className="size-4" />}
               </button>

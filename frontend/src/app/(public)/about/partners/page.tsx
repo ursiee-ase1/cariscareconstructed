@@ -2,6 +2,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { CmsImage } from '@/components/ui/CmsImage';
 import { SmartLink } from '@/components/ui/SmartLink';
 import { EmptyState } from '@/components/ui/Typography';
+import { FALLBACK_PARTNERS } from '@/lib/fallback-content';
 import { buildMetadata } from '@/lib/seo';
 import { getPartners } from '@/services/public';
 import type { Partner } from '@/types/api';
@@ -19,7 +20,9 @@ const TYPE_LABELS: Record<Partner['partner_type'], string> = {
 };
 
 export default async function PartnersPage() {
-  const partners = await getPartners();
+  // If the content API cannot be reached (after a retry), show the verified current partners rather
+  // than an error page; the live records are used again as soon as the API responds.
+  const partners = await getPartners().catch(() => FALLBACK_PARTNERS);
   const groups = (Object.keys(TYPE_LABELS) as Partner['partner_type'][])
     .map((t) => ({ type: t, items: partners.filter((p) => p.partner_type === t) }))
     .filter((g) => g.items.length);

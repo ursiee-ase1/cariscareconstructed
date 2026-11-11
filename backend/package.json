@@ -20,9 +20,11 @@
     "db:seed": "tsx src/scripts/seed.ts",
     "admin:create": "tsx src/scripts/create-admin.ts",
     "import:wordpress": "tsx src/scripts/import-wordpress.ts",
+    "content:update-2026-11": "tsx src/scripts/update-content-2026-11.ts",
     "prod:migrate": "node dist/scripts/migrate.js up",
     "prod:seed": "node dist/scripts/seed.js",
     "prod:admin:create": "node dist/scripts/create-admin.js",
+    "prod:content:update-2026-11": "node dist/scripts/update-content-2026-11.js",
     "docs:openapi": "tsx src/scripts/export-openapi.ts"
   },
   "dependencies": {

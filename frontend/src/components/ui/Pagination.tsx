@@ -16,7 +16,7 @@ export function Pagination({ meta, basePath, params = {} }: { meta: PageMeta; ba
   const pages = new Set([1, meta.totalPages, current - 1, current, current + 1].filter((p) => p >= 1 && p <= meta.totalPages));
   const list = [...pages].sort((a, b) => a - b);
 
-  const item = 'inline-flex h-10 min-w-10 items-center justify-center rounded-(--radius-card) px-3 font-display font-semibold';
+  const item = 'inline-flex h-10 min-w-10 items-center justify-center rounded-(--radius-control) px-3 font-display font-semibold';
   return (
     <nav aria-label="Pagination" className="mt-12 flex flex-wrap items-center justify-center gap-1.5">
       {current > 1 ? (

@@ -99,6 +99,11 @@ export const staff: StaffSeed[] = [
 ];
 
 // ---------------------------------------------------------------------------- partners
+/**
+ * Current partnerships shown on the website are KNUST and LEARN Logistics by Kühne Foundation
+ * (November 2026). ASU and ISCEA are kept as archived records — not deleted — so their history and
+ * logos stay in the dashboard; historical references to them elsewhere on the site are unchanged.
+ */
 export const partners = [
   {
     name: 'Kwame Nkrumah University of Science and Technology (KNUST)',
@@ -124,6 +129,7 @@ export const partners = [
     description: 'CARISCA was established at KNUST in partnership with Arizona State University.',
     is_featured: true,
     logo_file: 'ASU-Logo.svg',
+    status: 'archived' as const,
   },
   {
     name: 'International Supply Chain Education Alliance (ISCEA)',
@@ -131,6 +137,7 @@ export const partners = [
     website_url: 'https://www.isceaonline.com/',
     description: 'Partner for internationally recognised supply chain certification programmes offered through CARISCA.',
     is_featured: true,
+    status: 'archived' as const,
   },
 ];
 
@@ -197,11 +204,47 @@ export const researchProjects = [
   review: 'Only the title and team are published on the legacy site. Add the research problem, contribution and practical relevance.',
 }));
 
+/**
+ * ASN-RA meetings, shown in the Meetings section of /asn-ra (events whose title mentions ASN-RA).
+ * Sources: the legacy /asn-ra/ page ("ASN-RA members’ meeting — Date: October 8, 2025 — Venue:
+ * Online via Zoom") and the CARISCA news release on the inaugural meeting (8–9 February 2024, Accra).
+ */
+export const asnRaMeetings = [
+  {
+    slug: 'asn-ra-members-meeting-october-2025',
+    title: 'ASN-RA members’ meeting',
+    starts_at: '2025-10-08T00:00:00Z',
+    ends_at: null,
+    venue: 'Online via Zoom',
+    location_type: 'online' as const,
+    summary: 'A meeting of the Africa Supply Network Research Accelerator (ASN-RA) members, held online via Zoom.',
+    body: '<p>ASN-RA members’ meeting.</p><ul><li><strong>Date:</strong> 8 October 2025</li><li><strong>Venue:</strong> Online via Zoom</li></ul><p>Learn more about the <a href="/asn-ra">Africa Supply Network Research Accelerator</a>.</p>',
+    legacy_url: 'https://carisca.knust.edu.gh/asn-ra/',
+    review: 'Start time not stated on the legacy site (date only).',
+  },
+  {
+    slug: 'inaugural-asn-ra-meeting-2024',
+    title: 'Inaugural ASN-RA meeting',
+    starts_at: '2024-02-08T00:00:00Z',
+    ends_at: '2024-02-09T00:00:00Z',
+    venue: 'Accra, Ghana',
+    location_type: 'in_person' as const,
+    summary:
+      'CARISCA’s inaugural Africa Supply Network Research Accelerator meeting brought together 21 scholars from seven African nations, who formed teams to work on research projects for publication.',
+    body:
+      '<p>On 8–9 February 2024, CARISCA hosted its inaugural Africa Supply Network Research Accelerator (ASN-RA) meeting in Accra, Ghana. Inspired by Arizona State University’s Complex Adaptive Supply Networks Research Accelerator (CASN-RA), the meeting brought together 21 scholars from seven African nations to refine research ideas and facilitate the development of manuscripts, articles and research proposals.</p><p>The two-day meeting featured brainstorming sessions, breakout discussions and presentations, after which teams formed to work on research projects for future publication.</p><p>Read the news release: <a href="/news/connecting-african-researchers-to-address-local-supply-chain-challenges">Connecting African Researchers to Address Local Supply Chain Challenges</a>.</p>',
+    legacy_url: 'https://carisca.knust.edu.gh/connecting-african-researchers-to-address-local-supply-chain-challenges/',
+    review: null,
+  },
+];
+
 // ---------------------------------------------------------------------------- publications
 type PubSeed = {
   type: 'industry_report' | 'research_report' | 'policy_brief' | 'journal_article';
   title: string;
   file_source?: string;
+  /** Original cover image from the legacy Publications & Resources page (/research/our-resources/). */
+  cover_source?: string;
   external_url?: string;
   year?: number;
   review?: string;
@@ -214,23 +257,23 @@ const fromUpload = (path: string, year: number): Pick<PubSeed, 'file_source' | '
 });
 
 export const publications: PubSeed[] = [
-  { type: 'research_report', title: 'CARISCA Research Report: June 2021 – Oct. 2025', ...fromUpload('2025/10/CARISCA-Research-Report-JuneOct-21-25.pdf', 2025) },
-  { type: 'industry_report', title: 'The Automobile Sector in Ghana: A Comprehensive Sectorial Report', ...fromUpload('2025/10/REPORT_ON_AUTOMOBILE_SECTOR_OF_GHANA.pdf', 2025) },
-  { type: 'industry_report', title: 'AfCFTA Framework Implementation Pain Points: Insights from the Abidjan–Lagos Trade Corridor', ...fromUpload('2025/08/AfCFTA-FRAMEWORK-IMPLEMENTATION-PAIN-POINTS-INSIGHTS-FROM-THE-ABIDJAN-LAGOS-TRADE-CORRIDOR-2.pdf', 2025) },
-  { type: 'industry_report', title: 'Is there a link between port traffic and government tax revenue? A report on port traffic, competitiveness, and tax revenue', ...fromUpload('2025/04/Is-there-a-link-between-port-traffic-and-government-tax-CARISCA.pdf', 2025) },
-  { type: 'industry_report', title: 'Health Supply Chain Financing System in Ghana: Implications for Policy and Practice', ...fromUpload('2024/12/Health-Supply-Chain-Financing-System-in-Ghana-Implications-for-Policy-and-Practice-8.pdf', 2024) },
-  { type: 'industry_report', title: 'Combating drug counterfeiting for better healthcare: An assessment of traceability in the pharmaceutical supply chain in Ghana', ...fromUpload('2024/12/Combating-drug-counterfeiting-for-better-healthcare-An-assessment-of-traceability-in-the-pharmaceutical-supply-chain-in-Ghana.-4.pdf', 2024) },
-  { type: 'industry_report', title: 'State of Affairs of Logistics Services in Ghana’s Agricultural Supply Chains', ...fromUpload('2024/06/STATE-OF-AFFAIRS-OF-LOGISTICS-SERVICES-IN-GHANAS-AGRICULTURAL-SUPPLY-CHAINS-2.pdf', 2024) },
-  { type: 'research_report', title: 'Graduate Employability Report', ...fromUpload('2025/01/CARISCA-Graduate-Employability-Report-1.pdf', 2025) },
-  { type: 'industry_report', title: 'Agricultural Supply Chain Activities in Ghana – A Focus on Roots and Tubers and Cereals Sub-Sectors', ...fromUpload('2023/12/Final-AGRICULTURAL-SUPPLY-CHAIN-ACTIVITIES-IN-GHANA-–-A-Focus-on-Roots-Tubers-and-Cereals-Sub-sectors.pdf', 2023) },
-  { type: 'industry_report', title: 'The Role of Supply Chain Management in Healthcare Access in Ghana', ...fromUpload('2023/10/Industry-Report_Priscilla-Mante-Revised-design-Final-1.pdf', 2023) },
-  { type: 'industry_report', title: 'African Supply Chains: Meandering the AfCFTA Maze', ...fromUpload('2022/12/African-Supply-Chains_-Meandering-the-AFCTA-Maze-.pdf', 2022) },
-  { type: 'policy_brief', title: 'Enhancing Drug Traceability in Ghana to Combat Counterfeit Medicines', ...fromUpload('2024/12/Policy-Brief-Enhancing-Drug-Traceability-in-Ghana-to-Combat-Counterfeit-Medicines-1.pdf', 2024) },
-  { type: 'policy_brief', title: 'Health Supply Chain Financing System in Ghana: Implications for Policy and Practice (Policy Brief)', ...fromUpload('2024/12/Health-Supply-Chain-Financing-System-in-Ghana-Implications-for-Policy-and-Practice-6-1.pdf', 2024) },
-  { type: 'policy_brief', title: 'Food Losses along the Cassava Supply Chain in Ghana: Causes and Solutions', ...fromUpload('2023/10/Food-Losses-along-the-Cassava-Supply-Chain-in-Ghana-Causes-and-Solutions-2.pdf', 2023) },
-  { type: 'policy_brief', title: 'Thriving Through Disruptions: Enhancing Supply Resilience with Effective Leadership', ...fromUpload('2023/10/Thriving-Through-Disruptions-Enhancing-Supply-Resilience-with-Effective-Leadership-2.pdf', 2023) },
-  { type: 'policy_brief', title: 'Toward Food Security in Ghana: Financing Options for Sustainable Food Supply Chains', ...fromUpload('2023/08/Toward-Food-Security-in-Ghana-Financing-Options-for-Sustainable-Food-Supply-Chains-2.pdf-1.pdf', 2023) },
-  { type: 'policy_brief', title: 'How Do Digital Technologies Improve Sustainable Performance Among Smallholder Farmers?', ...fromUpload('2023/08/Policy-Brief-How-Do-Digital-Technologies-Improve-Sustainable-Performance-Among-Smallholder-Farmers.pdf', 2023) },
+  { type: 'research_report', title: 'CARISCA Research Report: June 2021 – Oct. 2025', cover_source: `${WP}/2025/10/CARISCA-Research-Report-JuneOct-1.png`, ...fromUpload('2025/10/CARISCA-Research-Report-JuneOct-21-25.pdf', 2025) },
+  { type: 'industry_report', title: 'The Automobile Sector in Ghana: A Comprehensive Sectorial Report', cover_source: `${WP}/2025/10/REPORT_ON_AUTOMOBILE_SECTOR_OF_GHANA.jpg`, ...fromUpload('2025/10/REPORT_ON_AUTOMOBILE_SECTOR_OF_GHANA.pdf', 2025) },
+  { type: 'industry_report', title: 'AfCFTA Framework Implementation Pain Points: Insights from the Abidjan–Lagos Trade Corridor', cover_source: `${WP}/2025/08/AfCFTA-FRAMEWORK-IMPLEMENTATION-PAIN-POINTS-INSIGHTS-FROM-THE-ABIDJAN-LAGOS-TRADE-CORRIDOR-.png`, ...fromUpload('2025/08/AfCFTA-FRAMEWORK-IMPLEMENTATION-PAIN-POINTS-INSIGHTS-FROM-THE-ABIDJAN-LAGOS-TRADE-CORRIDOR-2.pdf', 2025) },
+  { type: 'industry_report', title: 'Is there a link between port traffic and government tax revenue? A report on port traffic, competitiveness, and tax revenue', cover_source: `${WP}/2025/04/Screenshot-2025-04-03-151756.jpg`, ...fromUpload('2025/04/Is-there-a-link-between-port-traffic-and-government-tax-CARISCA.pdf', 2025) },
+  { type: 'industry_report', title: 'Health Supply Chain Financing System in Ghana: Implications for Policy and Practice', cover_source: `${WP}/2024/12/Screenshot-2024-12-02-160317.png`, ...fromUpload('2024/12/Health-Supply-Chain-Financing-System-in-Ghana-Implications-for-Policy-and-Practice-8.pdf', 2024) },
+  { type: 'industry_report', title: 'Combating drug counterfeiting for better healthcare: An assessment of traceability in the pharmaceutical supply chain in Ghana', cover_source: `${WP}/2024/12/Screenshot-2024-12-02-155250.png`, ...fromUpload('2024/12/Combating-drug-counterfeiting-for-better-healthcare-An-assessment-of-traceability-in-the-pharmaceutical-supply-chain-in-Ghana.-4.pdf', 2024) },
+  { type: 'industry_report', title: 'State of Affairs of Logistics Services in Ghana’s Agricultural Supply Chains', cover_source: `${WP}/2024/12/Screenshot-2024-12-04-152327.jpg`, ...fromUpload('2024/06/STATE-OF-AFFAIRS-OF-LOGISTICS-SERVICES-IN-GHANAS-AGRICULTURAL-SUPPLY-CHAINS-2.pdf', 2024) },
+  { type: 'research_report', title: 'Graduate Employability Report', cover_source: `${WP}/2025/01/Tracer-study-.jpg`, ...fromUpload('2025/01/CARISCA-Graduate-Employability-Report-1.pdf', 2025) },
+  { type: 'industry_report', title: 'Agricultural Supply Chain Activities in Ghana – A Focus on Roots and Tubers and Cereals Sub-Sectors', cover_source: `${WP}/2023/12/Screenshot-2023-12-21-161908.png`, ...fromUpload('2023/12/Final-AGRICULTURAL-SUPPLY-CHAIN-ACTIVITIES-IN-GHANA-–-A-Focus-on-Roots-Tubers-and-Cereals-Sub-sectors.pdf', 2023) },
+  { type: 'industry_report', title: 'The Role of Supply Chain Management in Healthcare Access in Ghana', cover_source: `${WP}/2023/10/Industry-Report_Priscilla-Mante-Revised-design-Final.png`, ...fromUpload('2023/10/Industry-Report_Priscilla-Mante-Revised-design-Final-1.pdf', 2023) },
+  { type: 'industry_report', title: 'African Supply Chains: Meandering the AfCFTA Maze', cover_source: `${WP}/2022/12/Afcta.jpg`, ...fromUpload('2022/12/African-Supply-Chains_-Meandering-the-AFCTA-Maze-.pdf', 2022) },
+  { type: 'policy_brief', title: 'Enhancing Drug Traceability in Ghana to Combat Counterfeit Medicines', cover_source: `${WP}/2024/12/Screenshot-2024-12-04-135911.png`, ...fromUpload('2024/12/Policy-Brief-Enhancing-Drug-Traceability-in-Ghana-to-Combat-Counterfeit-Medicines-1.pdf', 2024) },
+  { type: 'policy_brief', title: 'Health Supply Chain Financing System in Ghana: Implications for Policy and Practice (Policy Brief)', cover_source: `${WP}/2024/12/Screenshot-2024-12-04-135719.png`, ...fromUpload('2024/12/Health-Supply-Chain-Financing-System-in-Ghana-Implications-for-Policy-and-Practice-6-1.pdf', 2024) },
+  { type: 'policy_brief', title: 'Food Losses along the Cassava Supply Chain in Ghana: Causes and Solutions', cover_source: `${WP}/2023/10/Food-Losses-along-the-Cassava-Supply-Chain-in-Ghana-Causes-and-Solutions.jpg`, ...fromUpload('2023/10/Food-Losses-along-the-Cassava-Supply-Chain-in-Ghana-Causes-and-Solutions-2.pdf', 2023) },
+  { type: 'policy_brief', title: 'Thriving Through Disruptions: Enhancing Supply Resilience with Effective Leadership', cover_source: `${WP}/2023/10/Thriving-Through-Disruptions-Enhancing-Supply-Resilience-with-Effective-Leadership.jpg`, ...fromUpload('2023/10/Thriving-Through-Disruptions-Enhancing-Supply-Resilience-with-Effective-Leadership-2.pdf', 2023) },
+  { type: 'policy_brief', title: 'Toward Food Security in Ghana: Financing Options for Sustainable Food Supply Chains', cover_source: `${WP}/2024/12/Screenshot-2024-12-04-151858.jpg`, ...fromUpload('2023/08/Toward-Food-Security-in-Ghana-Financing-Options-for-Sustainable-Food-Supply-Chains-2.pdf-1.pdf', 2023) },
+  { type: 'policy_brief', title: 'How Do Digital Technologies Improve Sustainable Performance Among Smallholder Farmers?', cover_source: `${WP}/2023/08/Screenshot-2023-08-14-190541.jpg`, ...fromUpload('2023/08/Policy-Brief-How-Do-Digital-Technologies-Improve-Sustainable-Performance-Among-Smallholder-Farmers.pdf', 2023) },
   ...(
     [
       ['International product adaptation and performance: A systematic analysis of the literature and agenda for future research', 'https://www.sciencedirect.com/science/article/pii/S1090951624000774'],

@@ -170,6 +170,7 @@ export function PortalEventCard({ event }: { event: PortalEvent }) {
         <div className="flex flex-wrap items-center gap-2">
           {e.typeName && <Badge tone="gold">{e.typeName}</Badge>}
           {e.registrationOpen && <Badge tone="success">Registration open</Badge>}
+          {e.ended && <Badge tone="neutral">Past event</Badge>}
         </div>
         <h3 className="mt-3 text-[1.15rem] leading-snug font-bold">
           <a href={e.url} target="_blank" rel="noopener noreferrer" className={`group-hover:text-brand-700 ${stretched}`}>
@@ -196,7 +197,7 @@ export function PortalEventCard({ event }: { event: PortalEvent }) {
           )}
         </ul>
         <span className="mt-auto inline-flex items-center gap-1.5 pt-4 font-display text-sm font-semibold text-brand-700" aria-hidden>
-          View details &amp; register <ExternalLink className="size-3.5" />
+          {e.ended ? 'View event details' : 'View details & register'} <ExternalLink className="size-3.5" />
         </span>
       </div>
     </article>

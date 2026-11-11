@@ -34,14 +34,14 @@ export function NewsletterForm({ variant = 'dark', source = 'footer' }: { varian
           onChange={(e) => form.set('email', e.target.value)}
           aria-invalid={form.errors.email ? true : undefined}
           aria-describedby={form.errors.email ? `${id}-email-error` : undefined}
-          className={`h-12 flex-1 rounded-(--radius-card) border px-4 text-base outline-none focus:ring-3 ${
+          className={`h-12 flex-1 rounded-(--radius-control) border px-4 text-base outline-none focus:ring-3 ${
             dark ? 'border-white/30 bg-white text-ink focus:ring-sky-accent/50' : 'border-line bg-white text-ink focus:ring-brand-100'
           }`}
         />
         <button
           type="submit"
           disabled={form.submitting}
-          className={`h-12 rounded-(--radius-card) px-6 font-display font-bold tracking-wide disabled:opacity-60 ${
+          className={`h-12 rounded-(--radius-control) px-6 font-display font-bold tracking-wide disabled:opacity-60 ${
             dark ? 'bg-sky-accent text-brand-950 hover:bg-sky-accent-strong' : 'bg-brand-700 text-white hover:bg-brand-800'
           }`}
         >

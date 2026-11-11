@@ -299,9 +299,9 @@ export default async function HomePage() {
         <section aria-labelledby="partners-heading" className="border-t border-line py-14">
           <div className="container-site">
             <SectionHeading id="partners-heading" eyebrow="Partnerships" title="Working with" action={{ href: '/about/partners', label: 'All partners' }} />
-            <ul data-reveal-stagger className="grid grid-cols-2 gap-5 md:grid-cols-4">
+            <ul data-reveal-stagger className="flex flex-wrap justify-center gap-5">
               {home.partners.map((p) => (
-                <li key={p.id} className="flex flex-col rounded-(--radius-card) border border-line bg-white p-4">
+                <li key={p.id} className="flex w-[calc(50%-0.625rem)] flex-col rounded-(--radius-card) border border-line bg-white p-5 shadow-(--shadow-card) md:w-72">
                   <CmsImage media={p.logo} slot="partnerLogo" alt={p.logo ? `${p.name} logo` : undefined} sizes="(min-width:768px) 25vw, 50vw" />
                   <p className="mt-3 text-center text-sm font-semibold text-ink">{p.name}</p>
                 </li>
