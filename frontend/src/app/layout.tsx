@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from 'next';
-import { Barlow, Noto_Sans } from 'next/font/google';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { SITE_URL } from '@/lib/config';
 import '@/styles/globals.css';
 
-const heading = Barlow({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-heading', display: 'swap' });
-const body = Noto_Sans({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
+/**
+ * Typography matches the CARISCA Supply Chain Research Summit website (summit2027.carisca.org), whose
+ * stylesheet loads Plus Jakarta Sans (500/600/700) for headings and Inter (variable) for body text,
+ * both from Google Fonts (SIL Open Font License).
+ */
+const heading = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-heading', display: 'swap' });
+const body = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

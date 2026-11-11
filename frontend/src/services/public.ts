@@ -52,8 +52,24 @@ export const getCategories = async () => (await apiGet<Data<Category[]>>('/categ
 // ------------------------------------------------------------------ research & publications
 export const getResearchThemes = async () => (await apiGet<Data<ResearchTheme[]>>('/research/themes', tag('research'))).data;
 
-export const getResearchProjects = (query: { page?: number; pageSize?: number; theme?: string; status?: string }) =>
+export const getResearchProjects = (query: { page?: number; pageSize?: number; theme?: string; status?: string; programme?: string; exclude_programme?: string }) =>
   apiGet<ApiList<ResearchProject>>('/research/projects', { query, tags: ['research'] });
+
+/** Programme name that marks Africa Supply Network Research Accelerator projects (shown on /asn-ra). */
+export const ASN_RA_PROGRAMME = 'ASN-RA';
+export const isAsnRaProject = (p: Pick<ResearchProject, 'programme'>) => p.programme?.trim().toUpperCase() === ASN_RA_PROGRAMME;
+
+/** ASN-RA research projects, newest first. */
+export const getAsnRaProjects = async () => (await getResearchProjects({ programme: ASN_RA_PROGRAMME, pageSize: 50 })).data.filter(isAsnRaProject);
+
+/** Research projects outside ASN-RA (which has its own page). */
+export const getNonAsnRaProjects = async (query: { page?: number; pageSize?: number; theme?: string; status?: string }) => {
+  const list = await getResearchProjects({ ...query, exclude_programme: ASN_RA_PROGRAMME });
+  const data = list.data.filter((p) => !isAsnRaProject(p));
+  // An API without the programme filter returns ASN-RA projects too; drop them from the count as well.
+  const removed = list.data.length - data.length;
+  return { data, meta: { ...list.meta, total: Math.max(0, list.meta.total - removed) } };
+};
 
 export const getResearchProject = cache(
   async (slug: string) => (await apiGetOrNull<Data<ResearchProject>>(`/research/projects/${slug}`, tag('research', `research:${slug}`)))?.data ?? null,

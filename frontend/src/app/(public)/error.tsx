@@ -19,7 +19,7 @@ export default function PublicError({ error, reset }: { error: Error & { digest?
       <button
         type="button"
         onClick={reset}
-        className="mt-8 inline-flex h-11 items-center gap-2 rounded-(--radius-card) bg-brand-700 px-5 font-display font-semibold text-white hover:bg-brand-800"
+        className="mt-8 inline-flex h-11 items-center gap-2 rounded-(--radius-control) bg-brand-700 px-5 font-display font-semibold text-white hover:bg-brand-800"
       >
         <RefreshCw aria-hidden className="size-4" /> Try again
       </button>

@@ -1,7 +1,10 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import type { Model, ModelStatic, Transaction, WhereOptions } from 'sequelize';
 import {
   CpdProgramme,
   CpdSession,
+  Event,
   HomepageSlide,
   LmiIndicatorValue,
   LmiReport,
@@ -15,9 +18,11 @@ import {
   StaffGroup,
   StaffProfile,
 } from '../models';
+import { storeUpload } from '../services/media.service';
 import { sanitizeRichText } from '../utils/html';
 import { slugify } from '../utils/slug';
 import {
+  asnRaMeetings,
   cpdProgrammes,
   lmiReports,
   newsletters,
@@ -31,6 +36,17 @@ import {
 import { pages } from './data/pages';
 
 const PUBLISHED_AT = new Date('2026-10-21T00:00:00Z');
+const PARTNER_LOGOS = path.join(__dirname, 'assets', 'partner-logos');
+const LOGO_REVIEW = 'Upload the approved partner logo.';
+
+/** Stores a file shipped with the seeders through the normal upload path (validation + active storage driver). */
+async function storeBundledFile(file: string, meta: { alt_text: string; title: string }) {
+  const buffer = await fs.readFile(file);
+  return storeUpload(
+    { originalname: path.basename(file), buffer, size: buffer.length, mimetype: '', fieldname: 'file', encoding: '7bit' } as Express.Multer.File,
+    meta,
+  );
+}
 
 /** Creates the row if no row matches `where`; never overwrites existing (possibly edited) content. */
 async function ensure<M extends Model>(model: ModelStatic<M>, where: WhereOptions, values: Record<string, unknown>, t?: Transaction) {
@@ -110,13 +126,21 @@ export async function seedPeopleAndPartners(t?: Transaction) {
         description: p.description,
         is_featured: p.is_featured,
         sort_order: i,
-        status: 'published',
+        status: ('status' in p ? p.status : undefined) ?? 'published',
         published_at: PUBLISHED_AT,
-        review_note: ('review' in p ? p.review : null) ?? 'Upload the approved partner logo.',
+        review_note: ('review' in p ? p.review : null) ?? (p.logo_file ? null : LOGO_REVIEW),
       },
       t,
     );
     if (r.created) created++;
+    // Attaches the bundled logo once; a logo chosen in the dashboard is never replaced.
+    if (p.logo_file && !r.row.logo_id) {
+      const logo = await storeBundledFile(path.join(PARTNER_LOGOS, p.logo_file), { alt_text: `${p.name} logo`, title: p.name });
+      await r.row.update(
+        { logo_id: logo.id, review_note: r.row.review_note === LOGO_REVIEW ? null : r.row.review_note },
+        { transaction: t },
+      );
+    }
   }
   return created;
 }
@@ -209,6 +233,36 @@ export async function seedResearch(t?: Transaction) {
         await LmiIndicatorValue.create({ ...ind, report_id: r.row.get('id') as number }, { transaction: t });
       }
     }
+  }
+  return created;
+}
+
+/** ASN-RA meetings (events listed on /asn-ra). Returns the number of events created. */
+export async function seedAsnRaMeetings(t?: Transaction) {
+  let created = 0;
+  for (const m of asnRaMeetings) {
+    const r = await ensure(
+      Event,
+      { slug: m.slug },
+      {
+        slug: m.slug,
+        title: m.title,
+        event_type: 'meeting',
+        summary: m.summary,
+        body: sanitizeRichText(m.body),
+        starts_at: new Date(m.starts_at),
+        ends_at: m.ends_at ? new Date(m.ends_at) : null,
+        all_day: true,
+        venue: m.venue,
+        location_type: m.location_type,
+        legacy_url: m.legacy_url,
+        status: 'published',
+        published_at: new Date(m.starts_at),
+        review_note: m.review,
+      },
+      t,
+    );
+    if (r.created) created++;
   }
   return created;
 }

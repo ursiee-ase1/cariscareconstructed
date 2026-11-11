@@ -10,6 +10,11 @@ export class ApiError extends Error {
   }
 }
 
+/** Per-attempt time limits for API requests (one retry after a timeout or gateway error). */
+const FIRST_ATTEMPT_MS = 10_000;
+const RETRY_ATTEMPT_MS = 12_000;
+const RETRY_STATUSES = new Set([502, 503, 504]);
+
 type Query = Record<string, string | number | boolean | undefined | null>;
 
 export function buildQuery(query?: Query) {
@@ -29,15 +34,25 @@ export async function apiGet<T>(
   opts: { query?: Query; tags?: string[]; revalidate?: number } = {},
 ): Promise<T> {
   const url = `${SERVER_API_BASE_URL}${path}${buildQuery(opts.query)}`;
-  let res: Response;
-  try {
-    res = await fetch(url, {
+  const request = (timeoutMs: number) =>
+    fetch(url, {
       headers: { accept: 'application/json' },
       next: { revalidate: opts.revalidate ?? CONTENT_REVALIDATE_SECONDS, tags: opts.tags ?? [] },
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(timeoutMs),
     });
-  } catch (err) {
-    throw new ApiError(503, `The content service is unreachable (${(err as Error).message}).`);
+  let res: Response;
+  try {
+    res = await request(FIRST_ATTEMPT_MS);
+    // A gateway error is usually momentary (e.g. the API restarting): try once more.
+    if (RETRY_STATUSES.has(res.status)) res = await request(RETRY_ATTEMPT_MS);
+  } catch {
+    // The API (or its database connection) occasionally stalls for longer than a visitor should wait
+    // on one request; a fresh request normally succeeds straight away, so retry once before failing.
+    try {
+      res = await request(RETRY_ATTEMPT_MS);
+    } catch (err) {
+      throw new ApiError(503, `The content service is unreachable (${(err as Error).message}).`);
+    }
   }
   if (!res.ok) {
     let message = res.statusText;

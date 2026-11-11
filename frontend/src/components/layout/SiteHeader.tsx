@@ -23,7 +23,7 @@ export function SiteHeader({ site }: { site: SiteData }) {
           </a>
           <div className="flex items-center gap-5">
             {s.contact_phone && (
-              <a href={`tel:${s.contact_phone_link ?? s.contact_phone}`} className="hidden items-center gap-1.5 hover:text-white md:flex">
+              <a href={`tel:${s.contact_phone_link ?? s.contact_phone}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-white md:flex">
                 <Phone aria-hidden className="size-3.5" />
                 {s.contact_phone}
               </a>
@@ -82,7 +82,7 @@ export function SiteHeader({ site }: { site: SiteData }) {
                 href={s.summit_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden h-10 items-center rounded-(--radius-card) bg-gold px-4 font-display text-sm font-bold tracking-wide text-brand-950 hover:bg-[#c9a85c] lg:inline-flex"
+                className="hidden h-10 items-center rounded-(--radius-control) bg-gold px-4 font-display text-sm font-bold tracking-wide text-brand-950 hover:bg-[#c9a85c] lg:inline-flex"
               >
                 {s.summit_label ?? 'Summit'}
                 <span className="sr-only"> (opens in a new tab)</span>

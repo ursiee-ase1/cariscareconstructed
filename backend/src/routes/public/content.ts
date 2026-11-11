@@ -230,9 +230,20 @@ publicContentRouter.get('/research/themes', async (_req, res) => {
 });
 
 publicContentRouter.get('/research/projects', async (req, res) => {
-  const q = publicListQuerySchema.extend({ theme: z.string().max(150).optional(), status: z.enum(['planned', 'ongoing', 'completed']).optional() }).parse(req.query);
-  const where: Record<string, unknown> = { ...livePublished() };
+  const q = publicListQuerySchema
+    .extend({
+      theme: z.string().max(150).optional(),
+      status: z.enum(['planned', 'ongoing', 'completed']).optional(),
+      /** Only projects of this programme (e.g. ASN-RA). */
+      programme: z.string().max(150).optional(),
+      /** Leave out projects of this programme (programme-less projects are kept). */
+      exclude_programme: z.string().max(150).optional(),
+    })
+    .parse(req.query);
+  const where: Record<string | symbol, unknown> = { ...livePublished() };
   if (q.status) where.project_status = q.status;
+  if (q.programme) where.programme = q.programme;
+  else if (q.exclude_programme) where[Op.or] = [{ programme: null }, { programme: { [Op.ne]: q.exclude_programme } }];
   const themeInclude: Includeable = {
     model: ResearchTheme,
     as: 'theme',
@@ -240,7 +251,7 @@ publicContentRouter.get('/research/projects', async (req, res) => {
     ...(q.theme ? { where: { slug: q.theme }, required: true } : {}),
   };
   const { rows, count } = await ResearchProject.findAndCountAll({
-    where,
+    where: where as WhereOptions,
     attributes: { exclude: ['body'] },
     include: [img('image'), themeInclude],
     order: [['is_featured', 'desc'], ['published_at', 'desc']],

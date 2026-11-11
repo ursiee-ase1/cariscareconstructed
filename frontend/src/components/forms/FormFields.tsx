@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from 'react';
 /** Accessible form field primitives: labels, hints and errors are wired with aria attributes. */
 
 const inputBase =
-  'block w-full rounded-(--radius-card) border bg-white px-3.5 py-2.5 text-base text-ink shadow-xs outline-none transition placeholder:text-muted/70 focus:border-brand-500 focus:ring-3 focus:ring-brand-100 disabled:bg-surface';
+  'block w-full rounded-(--radius-control) border bg-white px-3.5 py-2.5 text-base text-ink shadow-xs outline-none transition placeholder:text-muted/70 focus:border-brand-500 focus:ring-3 focus:ring-brand-100 disabled:bg-surface';
 
 export function Field({
   id,

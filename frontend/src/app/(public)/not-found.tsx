@@ -13,7 +13,7 @@ export default function NotFound() {
         <label htmlFor="nf-search" className="sr-only">
           Search the website
         </label>
-        <input id="nf-search" name="q" type="search" placeholder="Search the website" className="h-11 flex-1 rounded-(--radius-card) border border-line px-3" />
+        <input id="nf-search" name="q" type="search" placeholder="Search the website" className="h-11 flex-1 rounded-(--radius-control) border border-line px-3" />
         <button type="submit" className={buttonClass()}>
           Search
         </button>

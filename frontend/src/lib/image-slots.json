@@ -7,7 +7,7 @@
   "newsThumb": { "width": 800, "height": 500, "ratio": "1.6:1", "fit": "cover", "file": "news-thumbnail-placeholder.svg", "label": "News thumbnail", "usage": "News cards in lists and on the homepage" },
   "articleFeature": { "width": 1200, "height": 675, "ratio": "16:9", "fit": "cover", "file": "news-feature-placeholder.svg", "label": "Article featured image", "usage": "Top of a news article page" },
   "portrait": { "width": 600, "height": 750, "ratio": "4:5", "fit": "cover", "file": "staff-portrait-placeholder.svg", "label": "Staff portrait", "usage": "Meet the Team cards and profile pages" },
-  "publicationCover": { "width": 600, "height": 850, "ratio": "0.71:1", "fit": "cover", "file": "publication-cover-placeholder.svg", "label": "Publication cover", "usage": "Publication cards and detail pages" },
+  "publicationCover": { "width": 600, "height": 850, "ratio": "0.71:1", "fit": "contain", "file": "publication-cover-placeholder.svg", "label": "Publication cover", "usage": "Publication cards and detail pages" },
   "newsletterCover": { "width": 600, "height": 776, "ratio": "0.77:1", "fit": "contain", "file": "newsletter-cover-placeholder.svg", "label": "Newsletter cover", "usage": "Newsletter archive" },
   "eventBanner": { "width": 1200, "height": 630, "ratio": "1.9:1", "fit": "contain", "file": "event-banner-placeholder.svg", "label": "Event banner", "usage": "Event cards and event pages (posters are shown uncropped)" },
   "partnerLogo": { "width": 600, "height": 300, "ratio": "2:1", "fit": "contain", "file": "partner-logo-placeholder.svg", "label": "Partner logo (SVG preferred)", "usage": "Partners page and homepage partner strip" },

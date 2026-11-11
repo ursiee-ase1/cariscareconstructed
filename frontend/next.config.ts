@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:5000/api/v1';
-const apiOrigin = new URL(apiBase);
 const isProd = process.env.NODE_ENV === 'production';
 
 /**
@@ -11,7 +10,12 @@ const isProd = process.env.NODE_ENV === 'production';
  * only ever talks to one origin. Point NEXT_PUBLIC_API_BASE_URL at this site's /api/v1.
  */
 const proxyTarget = process.env.API_PROXY_TARGET?.replace(/\/$/, '');
-const imageOrigins = [apiOrigin, ...(proxyTarget ? [new URL(proxyTarget)] : [])];
+/**
+ * Hosts that serve uploaded images: the API itself (local-storage driver), the API behind the
+ * proxy, and/or the public media bucket (Cloudflare R2). All drivers store objects under an
+ * `uploads/` prefix, so a single pathname pattern covers every origin.
+ */
+const imageOrigins = [apiBase, proxyTarget, process.env.MEDIA_PUBLIC_URL].filter(Boolean).map((url) => new URL(url!));
 
 const nextConfig: NextConfig = {
   // Self-contained server bundle for cPanel's Node.js application manager.
@@ -19,7 +23,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
-    // Uploaded media is served by the API under /uploads.
+    // Every storage driver (local disk, R2, Worker) puts files under /uploads/.
     remotePatterns: imageOrigins.map((origin) => ({
       protocol: origin.protocol.replace(':', '') as 'http' | 'https',
       hostname: origin.hostname,

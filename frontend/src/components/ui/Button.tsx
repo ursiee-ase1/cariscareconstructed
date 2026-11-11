@@ -18,7 +18,7 @@ const SIZES: Record<Size, string> = {
 };
 
 export const buttonClass = (variant: Variant = 'primary', size: Size = 'md', extra = '') =>
-  `inline-flex items-center justify-center gap-2 rounded-(--radius-card) font-display font-semibold tracking-wide transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${VARIANTS[variant]} ${SIZES[size]} ${extra}`;
+  `inline-flex items-center justify-center gap-2 rounded-(--radius-control) font-display font-semibold tracking-wide transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${VARIANTS[variant]} ${SIZES[size]} ${extra}`;
 
 export function ButtonLink({
   href,

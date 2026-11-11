@@ -47,10 +47,10 @@ export default async function SearchPage({ searchParams }: Props) {
             defaultValue={q}
             minLength={2}
             placeholder="Search news, publications, events and pages"
-            className="h-12 flex-1 rounded-(--radius-card) border-0 px-4 text-base text-ink outline-none focus:ring-3 focus:ring-sky-accent"
+            className="h-12 flex-1 rounded-(--radius-control) border-0 px-4 text-base text-ink outline-none focus:ring-3 focus:ring-sky-accent"
           />
           {type !== 'all' && <input type="hidden" name="type" value={type} />}
-          <button type="submit" className="h-12 rounded-(--radius-card) bg-sky-accent px-6 font-display font-bold text-brand-950 hover:bg-sky-accent-strong">
+          <button type="submit" className="h-12 rounded-(--radius-control) bg-sky-accent px-6 font-display font-bold text-brand-950 hover:bg-sky-accent-strong">
             Search
           </button>
         </form>

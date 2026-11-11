@@ -43,7 +43,7 @@ export function FilterBar({
               type="search"
               defaultValue={q}
               placeholder="Keywords"
-              className="h-11 w-full rounded-(--radius-card) border border-line bg-white pr-3 pl-9 outline-none focus:border-brand-500 focus:ring-3 focus:ring-brand-100"
+              className="h-11 w-full rounded-(--radius-control) border border-line bg-white pr-3 pl-9 outline-none focus:border-brand-500 focus:ring-3 focus:ring-brand-100"
             />
           </div>
         </div>
@@ -56,7 +56,7 @@ export function FilterBar({
               id={`filter-${s.name}`}
               name={s.name}
               defaultValue={s.value ?? ''}
-              className="h-11 w-full rounded-(--radius-card) border border-line bg-white px-3 outline-none focus:border-brand-500 focus:ring-3 focus:ring-brand-100"
+              className="h-11 w-full rounded-(--radius-control) border border-line bg-white px-3 outline-none focus:border-brand-500 focus:ring-3 focus:ring-brand-100"
             >
               <option value="">{s.allLabel ?? 'All'}</option>
               {s.options.map((o) => (
@@ -68,11 +68,11 @@ export function FilterBar({
           </div>
         ))}
         <div className="flex gap-2">
-          <button type="submit" className="h-11 rounded-(--radius-card) bg-brand-700 px-5 font-display font-semibold text-white hover:bg-brand-800">
+          <button type="submit" className="h-11 rounded-(--radius-control) bg-brand-700 px-5 font-display font-semibold text-white hover:bg-brand-800">
             Apply
           </button>
           {active && (
-            <Link href={`${action}${hidden.when ? `?when=${hidden.when}` : ''}`} className="flex h-11 items-center rounded-(--radius-card) px-3 font-semibold text-brand-700 hover:bg-white">
+            <Link href={`${action}${hidden.when ? `?when=${hidden.when}` : ''}`} className="flex h-11 items-center rounded-(--radius-control) px-3 font-semibold text-brand-700 hover:bg-white">
               Clear
             </Link>
           )}
