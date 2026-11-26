@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 
 /** Shown when content cannot be loaded (e.g. the API is temporarily unreachable). */
-export default function PublicError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function PublicError({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -18,7 +18,7 @@ export default function PublicError({ error, reset }: { error: Error & { digest?
       </p>
       <button
         type="button"
-        onClick={reset}
+        onClick={() => retry()}
         className="mt-8 inline-flex h-11 items-center gap-2 rounded-(--radius-control) bg-brand-700 px-5 font-display font-semibold text-white hover:bg-brand-800"
       >
         <RefreshCw aria-hidden className="size-4" /> Try again

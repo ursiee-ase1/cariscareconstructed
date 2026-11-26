@@ -30,7 +30,7 @@ export function HeaderSearch() {
         <label htmlFor={`${id}-desk`} className="sr-only">
           Search the CARISCA website
         </label>
-        <div className="flex h-10 items-center rounded-(--radius-control) border border-line bg-surface focus-within:border-brand-500 focus-within:bg-white">
+        <div className="flex h-10 items-center rounded-full border border-line bg-surface focus-within:border-brand-500 focus-within:bg-white">
           <input
             id={`${id}-desk`}
             name="q"
@@ -39,9 +39,9 @@ export function HeaderSearch() {
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search news, research, events…"
             minLength={2}
-            className="h-full w-60 bg-transparent pl-3 text-sm text-ink outline-none placeholder:text-muted lg:w-72"
+            className="h-full w-60 bg-transparent pl-4 text-sm text-ink outline-none placeholder:text-muted lg:w-72"
           />
-          <button type="submit" className="flex h-full w-10 items-center justify-center text-brand-700 hover:text-brand-900" aria-label="Search">
+          <button type="submit" className="flex h-full w-11 items-center justify-center rounded-r-full text-brand-700 hover:text-brand-900" aria-label="Search">
             <Search aria-hidden className="size-4" />
           </button>
         </div>
@@ -78,9 +78,9 @@ export function HeaderSearch() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search the website"
-              className="h-11 flex-1 rounded-(--radius-control) border border-line px-3 text-base outline-none focus:border-brand-500"
+              className="h-11 flex-1 rounded-full border border-line px-4 text-base outline-none focus:border-brand-500"
             />
-            <button type="submit" className="h-11 rounded-(--radius-control) bg-brand-700 px-4 font-display font-semibold text-white">
+            <button type="submit" className="h-11 rounded-full bg-brand-700 px-5 font-display font-semibold text-white">
               Search
             </button>
           </div>

@@ -111,7 +111,7 @@ export const partners = [
     website_url: 'https://www.knust.edu.gh/',
     description: 'CARISCA is an interdisciplinary centre of excellence established at KNUST, Kumasi, Ghana.',
     is_featured: true,
-    logo_file: 'logo-knust 1.svg',
+    logo_file: 'knust-logo.svg',
   },
   {
     name: 'LEARN Logistics by Kühne Foundation',
@@ -359,7 +359,7 @@ export const cpdProgrammes = [
     duration: 'One day',
     delivery_format: 'In-person (Accra) & Online (Zoom)',
     fee_text: 'In-person: GH¢1,500 · Virtual: GH¢1,000',
-    registration_url: 'https://cpd.carisca.org/',
+    registration_url: 'https://events.carisca.org/',
     image_source: `${WP}/2026/06/Designing-and-Delivering-Circular-Supply-Chains-For-Success-in-African-Markets-1.png`,
     sessions: [
       {
@@ -368,7 +368,7 @@ export const cpdProgrammes = [
         delivery_mode: 'hybrid' as const,
         fee_text: 'In-person: GH¢1,500 · Virtual: GH¢1,000',
         registration_status: 'closed' as const,
-        registration_url: 'https://cpd.carisca.org/',
+        registration_url: 'https://events.carisca.org/',
       },
     ],
     review: 'Session start time not stated on the legacy site (date only). The session date has passed.',

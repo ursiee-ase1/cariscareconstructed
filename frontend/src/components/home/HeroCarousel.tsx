@@ -11,6 +11,8 @@ const SLIDE_MS = 950;
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 const SWIPE_PX = 40;
 const REDUCED = '(prefers-reduced-motion: reduce)';
+/** Height of the site header (utility strip, identity bar and main navigation) from the lg breakpoint. */
+const HEADER_HEIGHT = '190px';
 const subscribeReducedMotion = (cb: () => void) => {
   const mq = window.matchMedia(REDUCED);
   mq.addEventListener('change', cb);
@@ -30,10 +32,14 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
   const n = items.length;
   const looped = n > 1;
   const track = looped ? [items[n - 1], ...items, items[0]] : items;
-  // The banner takes the photographs' own shape (from the first slide's image), so the image fills
-  // the full width and the height follows; nothing is cropped. Falls back to 3:2, the hero photos' ratio.
+  // The banner runs edge to edge. Its height follows the photographs' own shape (from the first
+  // slide's image; 3:2 by default) but never exceeds the screen space below the header, so the whole
+  // banner is visible without scrolling. Only when the screen is shorter than the photograph is a thin
+  // band trimmed from its top and bottom.
   const lead = items.find((s) => s.image?.width && s.image?.height)?.image;
   const ratio = lead ? `${lead.width} / ${lead.height}` : '3 / 2';
+  const heightPerWidth = lead?.width && lead.height ? lead.height / lead.width : 2 / 3;
+  const frameHeight = `max(30rem, min(${(heightPerWidth * 100).toFixed(3)}vw, calc(100svh - ${HEADER_HEIGHT})))`;
 
   // Position on the track: 1..n are the real slides, 0 and n + 1 the copies.
   const [pos, setPos] = useState(looped ? 1 : 0);
@@ -84,12 +90,12 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
   }, [playing, hovered, moving, pos, move]);
 
   return (
-    <section aria-roledescription="carousel" aria-label="Highlights" className="bg-white pt-3 sm:pt-4 md:pt-5">
-      {/* Wider than the site container so the photograph reaches towards the viewport edges. */}
-      <div className="mx-auto w-full max-w-[120rem] px-3 sm:px-4 lg:px-6">
+    <section aria-roledescription="carousel" aria-label="Highlights" className="bg-brand-950">
+      {/* Full-bleed: no side margins, borders or rounded corners. */}
+      <div className="w-full">
         <div
-          className="relative isolate w-full touch-pan-y overflow-hidden rounded-(--radius-card) bg-brand-950 lg:aspect-(--hero-ratio)"
-          style={{ '--hero-ratio': ratio } as CSSProperties}
+          className="relative isolate w-full touch-pan-y overflow-hidden bg-brand-950 lg:h-(--hero-h)"
+          style={{ '--hero-ratio': ratio, '--hero-h': frameHeight } as CSSProperties}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           onFocusCapture={() => setHovered(true)}
@@ -126,30 +132,25 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
                     inert={!active}
                     className="relative flex w-full shrink-0 flex-col lg:block lg:h-full"
                   >
-                    {/* The photograph is never cropped: the frame has the photograph's own proportions, so
-                        it fills the full width. Only a slide whose image has a different shape leaves
-                        spare space, which is filled with a softened copy of the same photograph. */}
+                    {/* Below lg the photograph keeps its own proportions at full width (nothing trimmed)
+                        with the text underneath; from lg it fills the banner behind the text. */}
                     <div className="relative aspect-(--hero-ratio) w-full overflow-hidden lg:absolute lg:inset-0 lg:-z-10 lg:aspect-auto">
-                      {slide.image && (
-                        <div aria-hidden className="absolute inset-0 max-lg:hidden">
-                          <CmsImage media={slide.image} slot="hero" alt="" fill fit="cover" eager className="scale-110 opacity-55 blur-2xl" sizes="(min-width:1024px) 95vw, 100vw" />
-                        </div>
-                      )}
                       <CmsImage
                         media={slide.image}
                         slot="hero"
                         alt={slide.image_alt}
                         fill
-                        fit="contain"
+                        fit="cover"
                         priority={real === 0 && !isCopy}
                         eager
                         className="bg-transparent!"
-                        sizes="(min-width:1920px) 1872px, 98vw"
+                        sizes="100vw"
                       />
                       <div aria-hidden className="absolute inset-0 hidden bg-linear-to-r from-brand-950/85 via-brand-950/45 via-45% to-transparent to-70% lg:block" />
                     </div>
-                    <div className="flex-1 bg-brand-950 px-5 pt-6 pb-20 sm:px-8 lg:absolute lg:inset-0 lg:flex lg:items-center lg:bg-transparent lg:px-10 lg:pt-0 lg:pb-10 lg:px-14 xl:px-20">
-                      <div className="max-w-xl">
+                    {/* From lg the text lines up with the header's logo and menu (the site container). */}
+                    <div className="flex-1 bg-brand-950 px-5 pt-6 pb-20 sm:px-8 lg:absolute lg:inset-0 lg:flex lg:items-center lg:bg-transparent lg:px-0 lg:pt-0 lg:pb-10">
+                      <div className="max-w-xl lg:ml-[max(2rem,calc((100%-var(--container-site))/2+2rem))]">
                         <div className="mb-4 h-1 w-14 rounded-full bg-sky-accent md:mb-5" aria-hidden />
                         <Heading className="text-[1.6rem] leading-[1.12] font-bold text-white sm:text-[2rem] md:text-[2.4rem] xl:text-[2.85rem]">{slide.title}</Heading>
                         {slide.caption && <p className="mt-3 line-clamp-3 text-base text-brand-100 md:mt-4 md:text-lg">{slide.caption}</p>}

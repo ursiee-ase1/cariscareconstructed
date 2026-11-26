@@ -27,7 +27,7 @@ export const FALLBACK_PARTNERS: Partner[] = [
     partner_type: 'host',
     description: 'CARISCA is an interdisciplinary centre of excellence established at KNUST, Kumasi, Ghana.',
     website_url: 'https://www.knust.edu.gh/',
-    logo: logo(-1, 'knust.svg', 'Kwame Nkrumah University of Science and Technology (KNUST)', 125, 58),
+    logo: logo(-1, 'knust.svg', 'Kwame Nkrumah University of Science and Technology (KNUST)', 449, 209),
   },
   {
     id: -2,

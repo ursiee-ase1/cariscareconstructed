@@ -87,7 +87,7 @@ export default async function CpdProgrammePage({ params }: Props) {
                     </p>
                     {!isPast && s.registration_status === 'open' && s.registration_url && !s.allow_online_registration && (
                       <ButtonLink href={s.registration_url} size="sm" className="mt-3">
-                        Register on the CPD portal
+                        Register on the events portal
                       </ButtonLink>
                     )}
                   </li>

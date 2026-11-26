@@ -82,7 +82,7 @@ export function SiteHeader({ site }: { site: SiteData }) {
                 href={s.summit_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden h-10 items-center rounded-(--radius-control) bg-gold px-4 font-display text-sm font-bold tracking-wide text-brand-950 hover:bg-[#c9a85c] lg:inline-flex"
+                className="hidden h-10 items-center rounded-full bg-gold px-5 font-display text-sm font-bold tracking-wide text-brand-950 hover:bg-[#c9a85c] lg:inline-flex"
               >
                 {s.summit_label ?? 'Summit'}
                 <span className="sr-only"> (opens in a new tab)</span>

@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
   // Self-contained server bundle for cPanel's Node.js application manager.
   output: 'standalone',
   poweredByHeader: false,
+  // Lets phones and other devices on the local network use the dev server (e.g. http://192.168.1.130:3000).
+  // Development only; production builds ignore it.
+  allowedDevOrigins: ['192.168.*.*', '10.*.*.*', '172.*.*.*'],
   reactStrictMode: true,
   images: {
     // Every storage driver (local disk, R2, Worker) puts files under /uploads/.

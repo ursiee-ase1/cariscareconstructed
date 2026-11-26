@@ -69,6 +69,10 @@ function toPortalEvent(e: PortalEventRecord): PortalEvent {
   };
 }
 
+/** An event type on the portal (its `type` filter), e.g. "cpd" for Continuing Professional Development. */
+export type PortalEventType = 'cpd' | (string & {});
+const typeQuery = (type?: PortalEventType) => (type ? `&type=${encodeURIComponent(type)}` : '');
+
 /** Fetches one listing from the portal's public API; null when the portal cannot be reached. */
 async function fetchPortalEvents(query: string): Promise<PortalEventRecord[] | null> {
   try {
@@ -89,8 +93,8 @@ async function fetchPortalEvents(query: string): Promise<PortalEventRecord[] | n
  * Upcoming events from the events portal, soonest first. Returns null when the portal cannot be
  * reached, so the homepage can still render and point visitors to the portal instead.
  */
-export async function getUpcomingPortalEvents(limit = 3): Promise<PortalEvent[] | null> {
-  const records = await fetchPortalEvents('limit=12');
+export async function getUpcomingPortalEvents(limit = 3, type?: PortalEventType): Promise<PortalEvent[] | null> {
+  const records = await fetchPortalEvents(`limit=12${typeQuery(type)}`);
   if (!records) return null;
   const now = Date.now();
   return records
@@ -104,8 +108,8 @@ export async function getUpcomingPortalEvents(limit = 3): Promise<PortalEvent[] 
  * Events that have taken place on the events portal (its "when=past" listing), most recent first.
  * Returns null when the portal cannot be reached.
  */
-export async function getPastPortalEvents(limit = 12): Promise<PortalEvent[] | null> {
-  const records = await fetchPortalEvents(`when=past&limit=${limit}`);
+export async function getPastPortalEvents(limit = 12, type?: PortalEventType): Promise<PortalEvent[] | null> {
+  const records = await fetchPortalEvents(`when=past&limit=${limit}${typeQuery(type)}`);
   if (!records) return null;
   return records.sort((a, b) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime()).map(toPortalEvent);
 }

@@ -74,9 +74,9 @@ const SETTINGS: SettingSeed[] = [
   { key: 'social_x', group: 'social', type: 'url', label: 'X (Twitter)', value: null },
   { key: 'social_youtube', group: 'social', type: 'url', label: 'YouTube', value: null },
   // External services
-  { key: 'summit_url', group: 'links', type: 'url', label: 'Current Supply Chain Research Summit website', value: 'https://summit2026.carisca.org/' },
-  { key: 'summit_label', group: 'links', label: 'Summit link label', value: '2026 Summit' },
-  { key: 'cpd_portal_url', group: 'links', type: 'url', label: 'CPD registration portal', value: 'https://cpd.carisca.org/' },
+  { key: 'summit_url', group: 'links', type: 'url', label: 'Current Supply Chain Research Summit website', value: 'https://summit2027.carisca.org/' },
+  { key: 'summit_label', group: 'links', label: 'Summit link label', value: '2027 Summit' },
+  { key: 'cpd_portal_url', group: 'links', type: 'url', label: 'CPD registration portal', value: 'https://events.carisca.org/' },
   { key: 'lmi_survey_url', group: 'links', type: 'url', label: 'Current LMI survey link', value: 'https://www.surveymonkey.com/r/Q12026LMI' },
   { key: 'lmi_survey_label', group: 'links', label: 'LMI survey label', value: 'The Logistics Managers Index Survey – 1st Quarter 2026' },
   // Homepage
@@ -206,7 +206,7 @@ const MAIN_MENU: MenuSeed[] = [
       { label: 'Gallery', url: '/gallery' },
     ],
   },
-  { label: '2026 Summit', url: 'https://summit2026.carisca.org/', newTab: true },
+  { label: '2027 Summit', url: 'https://summit2027.carisca.org/', newTab: true },
   { label: 'Contact', url: '/contact' },
 ];
 
