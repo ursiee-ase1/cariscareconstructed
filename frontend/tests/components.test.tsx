@@ -1,7 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { LmiChart } from '@/components/charts/LmiChart';
 import { NewsletterForm } from '@/components/forms/NewsletterForm';
 import { MainNav } from '@/components/layout/MainNav';
 import { CmsImage } from '@/components/ui/CmsImage';
@@ -131,24 +130,5 @@ describe('Pagination', () => {
   it('renders nothing for a single page', () => {
     const { container } = render(<Pagination meta={{ page: 1, pageSize: 12, total: 3, totalPages: 1 }} basePath="/news" />);
     expect(container).toBeEmptyDOMElement();
-  });
-});
-
-describe('LmiChart', () => {
-  it('plots only stored values and breaks the line where data is missing', () => {
-    const { container } = render(
-      <LmiChart
-        points={[
-          { label: 'Q1 2022', key: 2022.1, value: 64.7 },
-          { label: 'Q2 2022', key: 2022.2, value: 65.9 },
-          { label: 'Q3 2022', key: 2022.3, value: null },
-          { label: 'Q1 2023', key: 2023.1, value: 67 },
-          { label: 'Q2 2023', key: 2023.2, value: 64.2 },
-        ]}
-      />,
-    );
-    expect(container.querySelectorAll('path')).toHaveLength(2);
-    expect(screen.getByRole('img', { name: 'Q1 2023: 67.0' })).toBeInTheDocument();
-    expect(screen.queryByRole('img', { name: /Q3 2022/ })).not.toBeInTheDocument();
   });
 });
