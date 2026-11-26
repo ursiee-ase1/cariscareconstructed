@@ -9,7 +9,8 @@ import { EVENTS_SITE_URL } from '@/lib/config';
 import { DELIVERY_LABELS, formatDate, formatDateRange } from '@/lib/format';
 import { buildMetadata } from '@/lib/seo';
 import { getPastPortalEvents, getUpcomingPortalEvents } from '@/services/events-portal';
-import { getCpdProgrammes, getEvents, getSite } from '@/services/public';
+import { getCpdProgrammes, getEvents, getSite, resolvePage } from '@/services/public';
+import { SectionCards, sectionOf } from '@/components/layout/CmsPageView';
 import type { CpdProgramme, EventItem } from '@/types/api';
 
 export const metadata = buildMetadata({
@@ -62,13 +63,16 @@ function ProgrammeRow({ p, upcoming }: { p: CpdProgramme; upcoming: boolean }) {
 }
 
 export default async function CpdPage() {
-  const [programmes, { settings }, portalUpcoming, portalPast, archived] = await Promise.all([
+  const [programmes, { settings }, portalUpcoming, portalPast, archived, training] = await Promise.all([
     getCpdProgrammes(),
     getSite(),
     getUpcomingPortalEvents(12, PORTAL_CPD_TYPE),
     getPastPortalEvents(24, PORTAL_CPD_TYPE),
     getArchivedCpds(),
+    // The Training section page, for the section tabs (this page is built in code, not in the CMS).
+    resolvePage('/training').catch(() => null),
   ]);
+  const section = training?.type === 'page' ? sectionOf(training.page, training.siblings) : null;
   const portalUrl = settings.cpd_portal_url || `${EVENTS_SITE_URL}/`;
   const now = new Date();
   const upcoming = programmes.filter((p) => p.sessions.some((s) => new Date(s.starts_at) >= now && s.registration_status !== 'cancelled'));
@@ -86,7 +90,7 @@ export default async function CpdPage() {
         title="CARISCA CPDs"
         eyebrow="Training"
         intro="Continuing professional development and executive education for supply chain, procurement and logistics professionals."
-        crumbs={[{ label: 'Training', href: '/training' }, { label: 'CPDs' }]}
+        crumbs={[{ label: section?.root.title ?? 'Training', href: '/training' }, { label: 'CPDs' }]}
       />
       <div className="container-site py-12 md:py-16">
         <div className="mb-12 flex flex-col gap-4 rounded-(--radius-card) border border-brand-100 bg-brand-50 p-5 md:flex-row md:items-center md:justify-between md:p-6">
@@ -167,6 +171,11 @@ export default async function CpdPage() {
           </section>
         )}
       </div>
+      {section && (
+        <div className="container-site pb-16">
+          <SectionCards section={section} current="training/cpd" />
+        </div>
+      )}
     </>
   );
 }

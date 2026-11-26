@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect, redirect } from 'next/navigation';
 import { CalendarDays, MapPin, Wallet } from 'lucide-react';
 import { CpdRegistrationForm } from '@/components/forms/CpdRegistrationForm';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -8,7 +8,7 @@ import { CmsImage } from '@/components/ui/CmsImage';
 import { Badge, RichText } from '@/components/ui/Typography';
 import { DELIVERY_LABELS, formatDateRange } from '@/lib/format';
 import { buildMetadata } from '@/lib/seo';
-import { getCpdProgramme } from '@/services/public';
+import { getCpdProgramme, resolvePage } from '@/services/public';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -27,8 +27,17 @@ const TextBlock = ({ title, text }: { title: string; text: string | null }) =>
   ) : null;
 
 export default async function CpdProgrammePage({ params }: Props) {
-  const p = await getCpdProgramme((await params).slug);
-  if (!p) notFound();
+  const slug = (await params).slug;
+  const p = await getCpdProgramme(slug);
+  if (!p) {
+    // Old addresses under /training/cpd/ (e.g. legacy WordPress pages) may be in the redirect table.
+    const r = await resolvePage(`/training/cpd/${slug}`).catch(() => null);
+    if (r?.type === 'redirect') {
+      if (r.status === 302) redirect(r.to);
+      permanentRedirect(r.to);
+    }
+    notFound();
+  }
   const now = new Date();
   const upcoming = p.sessions.filter((s) => new Date(s.starts_at) >= now && s.registration_status !== 'cancelled');
   const past = p.sessions.filter((s) => !upcoming.includes(s));

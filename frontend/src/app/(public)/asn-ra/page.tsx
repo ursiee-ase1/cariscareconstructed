@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight, CalendarDays, Mail, MapPin, Megaphone, Monitor, Users } from 'lucide-react';
 import { ArticleListItem, ProjectCard } from '@/components/cards/Cards';
-import { crumbsFor } from '@/components/layout/CmsPageView';
+import { crumbsFor, MoreInSection } from '@/components/layout/CmsPageView';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge, EmptyState, RichText } from '@/components/ui/Typography';
 import { DELIVERY_LABELS, formatDate, formatDateRange } from '@/lib/format';
@@ -26,14 +26,6 @@ import type { EventItem } from '@/types/api';
 const PATH = '/asn-ra';
 const KEYWORD = 'ASN-RA';
 
-const SECTIONS = [
-  { id: 'about', label: 'About' },
-  { id: 'members', label: 'Members' },
-  { id: 'research-projects', label: 'Research projects' },
-  { id: 'announcements', label: 'Announcements' },
-  { id: 'meetings', label: 'Meetings' },
-  { id: 'contact', label: 'Contact' },
-] as const;
 
 type BodyParts = { about: string; members: string; announcements: string; meetings: string; contact: string; contactHeading: string | null };
 
@@ -171,21 +163,6 @@ export default async function AsnRaPage() {
     <>
       <PageHeader title={page.title} intro={page.summary} crumbs={[{ label: 'Research', href: '/research' }, ...crumbsFor({ ...page, parent: null })]} image={page.heroImage} />
 
-      {/* In-page navigation */}
-      <nav aria-label="On this page" className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/85">
-        <div className="container-site">
-          <ul className="-mx-1 flex gap-1 overflow-x-auto py-2.5 scrollbar-none">
-            {SECTIONS.map((s) => (
-              <li key={s.id} className="shrink-0">
-                <a href={`#${s.id}`} className="block rounded-(--radius-control) px-3.5 py-2 font-display text-[0.92rem] font-semibold text-brand-800 transition-colors hover:bg-brand-50">
-                  {s.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
       {/* 1. About */}
       <section id="about" aria-labelledby="about-heading" className="scroll-mt-20 py-12 md:py-16">
         <div className="container-site">
@@ -315,6 +292,9 @@ export default async function AsnRaPage() {
           <Mail aria-hidden className="hidden size-20 text-white/15 md:block" strokeWidth={1.25} />
         </div>
       </section>
+
+      {/* The other pages of the Research section. */}
+      <MoreInSection path="asn-ra" />
     </>
   );
 }

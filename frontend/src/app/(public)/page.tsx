@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, CalendarX, GraduationCap, Handshake, Microscope } from 'lucide-react';
+import { ArrowRight, BookOpen, CalendarX } from 'lucide-react';
 import { ArticleCard, ArticleListItem, CpdSessionCard, PortalEventCard, PublicationCard } from '@/components/cards/Cards';
 import { HeroCarousel } from '@/components/home/HeroCarousel';
 import { ButtonLink } from '@/components/ui/Button';
@@ -27,10 +27,10 @@ export async function generateMetadata() {
   };
 }
 
-const FOCUS: Array<{ path: string; label: string; icon: typeof Microscope; slot: ImageSlot }> = [
-  { path: 'research', label: 'Research', icon: Microscope, slot: 'feature' },
-  { path: 'stakeholder-engagement', label: 'Stakeholder Engagement', icon: Handshake, slot: 'stakeholder' },
-  { path: 'training', label: 'Curricula & Training', icon: GraduationCap, slot: 'training' },
+const FOCUS: Array<{ path: string; label: string; slot: ImageSlot }> = [
+  { path: 'research', label: 'Research', slot: 'feature' },
+  { path: 'stakeholder-engagement', label: 'Stakeholder Engagement', slot: 'stakeholder' },
+  { path: 'training', label: 'Curricula & Training', slot: 'training' },
 ];
 
 export default async function HomePage() {
@@ -90,14 +90,10 @@ export default async function HomePage() {
           <div data-reveal-stagger className="grid gap-6 md:grid-cols-3">
             {FOCUS.map((f, i) => {
               const page = (focusPages[i]?.type === 'page' ? focusPages[i].page : null) as Page | null;
-              const Icon = f.icon;
               return (
                 <article key={f.path} className="group relative flex flex-col overflow-hidden rounded-(--radius-card) bg-white shadow-(--shadow-card)">
                   <CmsImage media={page?.heroImage} slot={f.slot} sizes="(min-width:768px) 33vw, 100vw" />
                   <div className="flex flex-1 flex-col p-6">
-                    <span className="relative z-10 -mt-12 mb-4 flex size-12 shrink-0 items-center justify-center rounded bg-brand-700 text-white shadow-(--shadow-card) ring-4 ring-white">
-                      <Icon aria-hidden className="size-6" />
-                    </span>
                     <h3 className="text-xl font-bold">
                       <Link href={`/${f.path}`} className="after:absolute after:inset-0 group-hover:text-brand-700">
                         {page?.title ?? f.label}

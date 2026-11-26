@@ -1,5 +1,6 @@
 import { ClipboardList } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { MoreInSection } from '@/components/layout/CmsPageView';
 import { ButtonLink } from '@/components/ui/Button';
 import { FileDownload } from '@/components/ui/FileDownload';
 import { EmptyState, RichText, SectionHeading } from '@/components/ui/Typography';
@@ -75,6 +76,8 @@ export default async function LmiPage() {
           </div>
         </aside>
       </div>
+      {/* The other pages of the Research section. */}
+      <MoreInSection path="lmi" />
     </>
   );
 }

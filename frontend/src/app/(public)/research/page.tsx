@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { BarChart3, BookOpen, Network } from 'lucide-react';
 import { ProjectCard, PublicationCard } from '@/components/cards/Cards';
 import { CmsPageView } from '@/components/layout/CmsPageView';
 import { SectionHeading } from '@/components/ui/Typography';
@@ -13,35 +12,19 @@ export async function generateMetadata() {
   return buildMetadata({ title: page?.seo_title || 'Research', description: page?.seo_description || page?.summary, path: '/research', image: page?.heroImage });
 }
 
-const QUICK = [
-  { href: '/publications', label: 'Publications & Resources', text: 'Industry reports, policy briefs and journal articles.', icon: BookOpen },
-  { href: '/lmi', label: 'Logistics Managers Index', text: 'Quarterly index of logistics activity in Ghana.', icon: BarChart3 },
-  { href: '/asn-ra', label: 'ASN-RA', text: 'Africa Supply Network Research Accelerator: members, research projects and meetings.', icon: Network },
-];
-
 export default async function ResearchPage() {
   const [resolved, themes, projects, pubs] = await Promise.all([
     resolvePage('/research'),
     getResearchThemes(),
-    // ASN-RA projects are presented on the ASN-RA page (linked above), not repeated here.
+    // ASN-RA projects are presented on the ASN-RA page (see the section cards), not repeated here.
     getNonAsnRaProjects({ pageSize: 6 }),
     getPublications({ pageSize: 4 }),
   ]);
   if (resolved?.type !== 'page') notFound();
   return (
     <CmsPageView page={resolved.page} siblings={resolved.siblings}>
-      <div className="mt-12 grid gap-4 sm:grid-cols-3">
-        {QUICK.map((q) => (
-          <Link key={q.href} href={q.href} className="group rounded-(--radius-card) border border-line bg-white p-5 shadow-(--shadow-card) hover:border-brand-300">
-            <q.icon aria-hidden className="size-7 text-brand-600" />
-            <p className="mt-3 font-display text-lg font-bold text-ink group-hover:text-brand-700">{q.label}</p>
-            <p className="mt-1 text-sm text-muted">{q.text}</p>
-          </Link>
-        ))}
-      </div>
-
       {themes.length > 0 && (
-        <section aria-labelledby="themes-heading" className="mt-14">
+        <section aria-labelledby="themes-heading" className="mt-12">
           <SectionHeading id="themes-heading" title="Research themes" />
           <div className="grid gap-4 sm:grid-cols-2">
             {themes.map((t) => (

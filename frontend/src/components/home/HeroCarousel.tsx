@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react';
 import type { Slide } from '@/types/api';
 import { ButtonLink } from '../ui/Button';
@@ -22,8 +21,8 @@ const subscribeReducedMotion = (cb: () => void) => {
 /**
  * Homepage hero banner (WAI-ARIA carousel pattern). Slides travel right to left; the track is
  * bookended with copies of the last and first slides so wrapping keeps the same direction, then
- * jumps (invisibly) back to the real slide. Auto-rotation pauses on hover/focus, can be paused by
- * the visitor, and is off when reduced motion is preferred, which also removes the sliding.
+ * jumps (invisibly) back to the real slide. Auto-rotation pauses on hover/focus and is off when
+ * reduced motion is preferred, which also removes the sliding.
  */
 export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slides: Slide[]; fallbackTitle: string; fallbackCaption?: string | null }) {
   const items: Slide[] = slides.length
@@ -45,12 +44,11 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
   const [pos, setPos] = useState(looped ? 1 : 0);
   const [animate, setAnimate] = useState(true);
   const [moving, setMoving] = useState(false);
-  const current = looped ? (pos - 1 + n) % n : 0;
 
   const reducedMotion = useSyncExternalStore(subscribeReducedMotion, () => window.matchMedia(REDUCED).matches, () => false);
-  // Visitors who prefer reduced motion get no auto-rotation unless they press play.
-  const [userPlaying, setPlaying] = useState<boolean | null>(null);
-  const playing = (userPlaying ?? !reducedMotion) && looped;
+  // There are no on-screen controls: slides advance on their own (and by swiping on touch screens).
+  // Visitors who prefer reduced motion get no auto-rotation.
+  const playing = !reducedMotion && looped;
   const [hovered, setHovered] = useState(false);
   const touchX = useRef<number | null>(null);
 
@@ -173,32 +171,6 @@ export function HeroCarousel({ slides, fallbackTitle, fallbackCaption }: { slide
               })}
             </div>
           </div>
-
-          {looped && (
-            <div className="absolute right-4 bottom-4 flex items-center gap-2 md:right-6 md:bottom-5">
-              <button type="button" onClick={() => setPlaying(!playing)} className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur hover:bg-white/30" aria-label={playing ? 'Pause slideshow' : 'Play slideshow'}>
-                {playing ? <Pause aria-hidden className="size-4" /> : <Play aria-hidden className="size-4" />}
-              </button>
-              <button type="button" onClick={() => move(pos - 1)} className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur hover:bg-white/30" aria-label="Previous slide">
-                <ChevronLeft aria-hidden className="size-5" />
-              </button>
-              <div className="flex gap-1.5 px-1">
-                {items.map((s, i) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => move(i + 1)}
-                    aria-label={`Go to slide ${i + 1}`}
-                    aria-current={i === current ? 'true' : undefined}
-                    className={`h-2.5 rounded-full transition-all ${i === current ? 'w-7 bg-sky-accent' : 'w-2.5 bg-white/60 hover:bg-white'}`}
-                  />
-                ))}
-              </div>
-              <button type="button" onClick={() => move(pos + 1)} className="flex size-10 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur hover:bg-white/30" aria-label="Next slide">
-                <ChevronRight aria-hidden className="size-5" />
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </section>

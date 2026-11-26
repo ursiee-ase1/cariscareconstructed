@@ -1,4 +1,6 @@
+import { Suspense } from 'react';
 import { connection } from 'next/server';
+import { NavigationProgress } from '@/components/layout/NavigationProgress';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { jsonLd, organizationJsonLd } from '@/lib/seo';
@@ -34,6 +36,10 @@ export default async function PublicLayout({ children }: { children: React.React
         Skip to main content
       </a>
       <SiteHeader site={site} />
+      {/* Reads the URL, so it needs its own Suspense boundary to keep the rest of the page server-rendered. */}
+      <Suspense fallback={null}>
+        <NavigationProgress />
+      </Suspense>
       <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
         {children}
       </main>

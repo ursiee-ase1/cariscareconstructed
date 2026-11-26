@@ -4,21 +4,15 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { firstParam, pageParam } from '@/components/ui/FilterBar';
 import { Pagination } from '@/components/ui/Pagination';
 import { EmptyState } from '@/components/ui/Typography';
+import { Highlight } from '@/components/ui/Highlight';
 import { formatDate } from '@/lib/format';
+import { MIN_QUERY_LENGTH, SEARCH_TYPES, searchTypeLabel } from '@/lib/search';
 import { buildMetadata } from '@/lib/seo';
 import { search } from '@/services/public';
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
-const TYPES: Array<{ value: string; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'news', label: 'News' },
-  { value: 'publication', label: 'Publications' },
-  { value: 'event', label: 'Events' },
-  { value: 'research', label: 'Research' },
-  { value: 'training', label: 'Training' },
-  { value: 'page', label: 'Pages' },
-];
+const TYPES = SEARCH_TYPES;
 
 export async function generateMetadata({ searchParams }: Props) {
   const q = firstParam((await searchParams).q);
@@ -30,33 +24,17 @@ export default async function SearchPage({ searchParams }: Props) {
   const q = (firstParam(sp.q) ?? '').trim().slice(0, 200);
   const type = TYPES.some((t) => t.value === firstParam(sp.type)) ? firstParam(sp.type)! : 'all';
   const page = pageParam(sp.page);
-  const res = q.length >= 2 ? await search({ q, type, page }) : null;
-  const label = (v: string) => TYPES.find((t) => t.value === v)?.label ?? v;
+  const res = q.length >= MIN_QUERY_LENGTH ? await search({ q, type, page }) : null;
 
   return (
     <>
-      <PageHeader title="Search" crumbs={[{ label: 'Search' }]}>
-        <form action="/search" role="search" className="mt-6 flex max-w-2xl gap-2">
-          <label htmlFor="site-search" className="sr-only">
-            Search the CARISCA website
-          </label>
-          <input
-            id="site-search"
-            name="q"
-            type="search"
-            defaultValue={q}
-            minLength={2}
-            placeholder="Search news, publications, events and pages"
-            className="h-12 flex-1 rounded-(--radius-control) border-0 px-4 text-base text-ink outline-none focus:ring-3 focus:ring-sky-accent"
-          />
-          {type !== 'all' && <input type="hidden" name="type" value={type} />}
-          <button type="submit" className="h-12 rounded-(--radius-control) bg-sky-accent px-6 font-display font-bold text-brand-950 hover:bg-sky-accent-strong">
-            Search
-          </button>
-        </form>
-      </PageHeader>
+      <PageHeader
+        title={q.length >= MIN_QUERY_LENGTH ? `Results for “${q}”` : 'Search'}
+        intro={q.length >= MIN_QUERY_LENGTH ? undefined : 'Use the search box at the top of the page to search news, publications, events and pages.'}
+        crumbs={[{ label: 'Search' }]}
+      />
       <div className="container-site py-12">
-        {!res && <p className="text-lg text-muted">Enter at least two characters to search published content.</p>}
+        {!res && <p className="text-lg text-muted">Enter at least two characters in the search box at the top of the page.</p>}
         {res && (
           <>
             <nav aria-label="Filter results by type" className="mb-8 flex flex-wrap gap-2">
@@ -84,15 +62,19 @@ export default async function SearchPage({ searchParams }: Props) {
                 {res.data.results.map((r) => (
                   <li key={`${r.type}-${r.url}`} className="py-5">
                     <p className="text-xs font-semibold tracking-wide text-sky-ink uppercase">
-                      {label(r.type)}
+                      {searchTypeLabel(r.type)}
                       {r.date ? ` · ${typeof r.date === 'number' ? r.date : formatDate(String(r.date))}` : ''}
                     </p>
                     <h2 className="mt-1 text-lg font-bold">
                       <Link href={r.url} className="hover:text-brand-700 hover:underline">
-                        {r.title}
+                        <Highlight text={r.title} query={q} />
                       </Link>
                     </h2>
-                    {r.snippet && <p className="mt-1 text-muted">{r.snippet}</p>}
+                    {r.snippet && (
+                      <p className="mt-1 text-muted">
+                        <Highlight text={r.snippet} query={q} />
+                      </p>
+                    )}
                   </li>
                 ))}
               </ol>

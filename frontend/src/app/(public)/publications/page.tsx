@@ -1,6 +1,7 @@
 import { BookOpen } from 'lucide-react';
 import { PublicationCard } from '@/components/cards/Cards';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { MoreInSection } from '@/components/layout/CmsPageView';
 import { FilterBar, ResultCount, firstParam, pageParam } from '@/components/ui/FilterBar';
 import { Pagination } from '@/components/ui/Pagination';
 import { EmptyState } from '@/components/ui/Typography';
@@ -76,6 +77,8 @@ export default async function PublicationsPage({ searchParams }: Props) {
         )}
         <Pagination meta={list.meta} basePath="/publications" params={{ type, q, author, year: year ? String(year) : undefined }} />
       </div>
+      {/* The other pages of the Research section. */}
+      <MoreInSection path="publications" />
     </>
   );
 }

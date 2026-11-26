@@ -4,23 +4,19 @@ import { Mail, Phone } from 'lucide-react';
 import type { SiteData } from '@/types/api';
 import { SmartLink } from '../ui/SmartLink';
 import { MainNav } from './MainNav';
-import { HeaderSearch } from './HeaderSearch';
+import { Suspense } from 'react';
+import { HeaderSearch, HeaderSearchFromUrl } from './HeaderSearch';
 
-/** Institutional header: KNUST affiliation strip, CARISCA identity, search and main navigation. */
+/** Site header: contact/utility strip, CARISCA identity, search and main navigation. */
 export function SiteHeader({ site }: { site: SiteData }) {
   const s = site.settings;
   const main = site.menus.main ?? [];
   const utility = site.menus.utility ?? [];
   return (
     <header className="relative z-40">
-      {/* Affiliation / utility strip */}
-      <div className="border-b-2 border-knust-maroon bg-brand-950 text-[0.8125rem] text-brand-100">
-        <div className="container-site flex h-10 items-center justify-between gap-4">
-          <a href="https://www.knust.edu.gh/" target="_blank" rel="noopener noreferrer" className="flex min-w-0 items-center gap-2.5 hover:text-white">
-            <Image src="/brand/knust-logo-white.png" alt="KNUST" width={127} height={25} className="h-5 w-auto shrink-0" />
-            <span className="hidden truncate sm:inline">{s.affiliation_text ?? 'Kwame Nkrumah University of Science and Technology'}</span>
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
+      {/* Utility strip: contact details and quick links. Everything in it is hidden on phones, so the strip is too. */}
+      <div className="hidden border-b-2 border-knust-maroon bg-brand-950 text-[0.8125rem] text-brand-100 md:block">
+        <div className="container-site flex h-10 items-center justify-end gap-4">
           <div className="flex items-center gap-5">
             {s.contact_phone && (
               <a href={`tel:${s.contact_phone_link ?? s.contact_phone}`} className="hidden items-center gap-1.5 whitespace-nowrap hover:text-white md:flex">
@@ -76,7 +72,10 @@ export function SiteHeader({ site }: { site: SiteData }) {
             </span>
           </Link>
           <div className="flex items-center gap-3">
-            <HeaderSearch />
+            {/* Reads the URL (to show the current query on /search), so it gets its own Suspense boundary. */}
+            <Suspense fallback={<HeaderSearch />}>
+              <HeaderSearchFromUrl />
+            </Suspense>
             {s.summit_url && (
               <a
                 href={s.summit_url}

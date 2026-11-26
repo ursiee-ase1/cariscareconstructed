@@ -66,7 +66,7 @@ export function SiteFooter({ site }: { site: SiteData }) {
             <p className="mt-4 text-[0.95rem] leading-relaxed">{s.site_description}</p>
             {s.support_text && <p className="mt-4 text-sm text-brand-200">{s.support_text}</p>}
             {socials.length > 0 && (
-              <ul className="mt-6 flex flex-wrap gap-2" aria-label="CARISCA on social media">
+              <ul className="mt-5 -ml-2 flex flex-wrap gap-1" aria-label="CARISCA on social media">
                 {socials.map((x) => (
                   <li key={x.key}>
                     <a
@@ -74,9 +74,9 @@ export function SiteFooter({ site }: { site: SiteData }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       title={x.label}
-                      className="inline-flex size-9 items-center justify-center rounded border border-white/20 text-white hover:border-sky-accent hover:text-sky-accent"
+                      className="inline-flex size-9 items-center justify-center text-white hover:text-sky-accent"
                     >
-                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-4">
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="size-5">
                         <path d={x.path} />
                       </svg>
                       <span className="sr-only">{x.label} (opens in a new tab)</span>
@@ -138,18 +138,6 @@ export function SiteFooter({ site }: { site: SiteData }) {
           <div className="container-site flex flex-col gap-3 py-5 text-sm text-brand-200 md:flex-row md:items-center md:justify-between">
             <p>
               © {year} {s.copyright_holder ?? 'CARISCA, KNUST'}. All rights reserved.
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="inline-block h-3 w-1 bg-knust-maroon" aria-hidden />
-              <span className="inline-block h-3 w-1 bg-gold" aria-hidden />
-              <span className="inline-block h-3 w-1 bg-knust-green" aria-hidden />
-              <span>
-                A centre of excellence at{' '}
-                <a href="https://www.knust.edu.gh/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">
-                  KNUST
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </span>
             </p>
           </div>
         </div>

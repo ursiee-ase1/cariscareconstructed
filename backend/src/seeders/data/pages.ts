@@ -243,7 +243,8 @@ export const legacyPages: Array<{ wpPath: string; path: string; title?: string; 
   { wpPath: 'industry/supply-chain-action-laboratory-engagement-scale', path: 'stakeholder-engagement/supply-chain-action-network', title: 'Supply Chain Action Network (SCAN)', parent: 'stakeholder-engagement', status: 'published' },
   { wpPath: 'what-we-do/research-capacity-development', path: 'research/research-capacity-development', parent: 'research', status: 'published' },
   { wpPath: 'distinguished-lecture-series', path: 'research/distinguished-lecture-series', parent: 'research', status: 'published' },
-  { wpPath: 'innovations', path: 'research/innovations-lab', title: 'CARISCA Innovations Lab', parent: 'research', status: 'published' },
+  // Removed from the website in November 2026 (kept as a draft).
+  { wpPath: 'innovations', path: 'research/innovations-lab', title: 'CARISCA Innovations Lab', parent: 'research', status: 'draft' },
   { wpPath: 'carisca-dissertation-awards', path: 'research/dissertation-awards', parent: 'research', status: 'published' },
   { wpPath: 'scholarship', path: 'training/scholarships', parent: 'training', status: 'published' },
   { wpPath: 'what-we-do/professional-training-and-education', path: 'training/professional-training-and-education', parent: 'training', status: 'published' },
@@ -251,7 +252,8 @@ export const legacyPages: Array<{ wpPath: string; path: string; title?: string; 
   { wpPath: 'bachelor-of-science-bsc-in-logistics-and-supply-chain-management', path: 'training/academic-programmes/bsc-logistics-and-supply-chain-management', parent: 'training/academic-programmes', status: 'published' },
   { wpPath: 'master-of-science-msc-philosophy-m-phil-logistics-and-supply-chain-management', path: 'training/academic-programmes/msc-mphil-logistics-and-supply-chain-management', parent: 'training/academic-programmes', status: 'published' },
   { wpPath: 'master-of-science-msc-procurement-and-supply-chain-management', path: 'training/academic-programmes/msc-procurement-and-supply-chain-management', parent: 'training/academic-programmes', status: 'published' },
-  { wpPath: 'training/cpd/masterclass-experience', path: 'training/masterclass-experience', parent: 'training', status: 'published' },
+  // Removed from the website in November 2026 (kept as a draft).
+  { wpPath: 'training/cpd/masterclass-experience', path: 'training/masterclass-experience', parent: 'training', status: 'draft' },
   { wpPath: 'supply-chain-research-summit', path: 'supply-chain-research-summit', title: 'Supply Chain Research Summit', status: 'published' },
   { wpPath: '2026-supply-chain-research-summit', path: 'supply-chain-research-summit/2026', title: '2026 Supply Chain Research Summit', parent: 'supply-chain-research-summit', status: 'published' },
   { wpPath: '2025-supply-chain-research-summit', path: 'supply-chain-research-summit/2025', parent: 'supply-chain-research-summit', status: 'published' },

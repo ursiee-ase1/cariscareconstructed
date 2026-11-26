@@ -103,6 +103,18 @@
   .prose-cms table {
     @apply block overflow-x-auto md:table;
   }
+  /* A single photo keeps its proportions but never dominates the page. */
+  .prose-cms img {
+    @apply mx-auto h-auto max-h-[34rem] w-auto max-w-full;
+  }
+  /* Several photos in one paragraph form a gallery row of equal tiles (Admin › Pages: put the
+     images side by side in the same paragraph). */
+  .prose-cms p:has(> img + img) {
+    @apply grid grid-cols-2 gap-3 md:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] md:gap-4;
+  }
+  .prose-cms p:has(> img + img) > img {
+    @apply m-0 aspect-4/3 max-h-none w-full object-cover;
+  }
 
   /* Scroll reveal (components/ui/ScrollReveal.tsx). Only applied by script, so content is never
      hidden without JavaScript; the classes are removed again once an element has arrived. */
